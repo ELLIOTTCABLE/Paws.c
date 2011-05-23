@@ -27,4 +27,4 @@ as you explore. This document will attempt to document your way towards the more
 - Our “tests” are written using a neat little test-running tool named `Cest.`; it’s very self-contained and easy
   to understand. See the source-code in `Vendor/Cest.c`.
 - Most of our object system depends on the `fork` nuketype (as you probably know if you’re reading this), and the
-  `fork` type depends heavily on our unusual linked-list implementation. See `Source/Types/fork/ll.c`.
+  `fork` type depends heavily on our unusual linked-list implementation. See `Source/Types/fork/LL.c`.

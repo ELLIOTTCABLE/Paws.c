@@ -97,6 +97,7 @@
 /*#     include "Ancillary/Unit/Unit.c" */
 
 #       include "Types/fork/fork.c"
+#       include "Types/label/label.c"
 /*#     include "Types/execution/execution.c" */
 
 #       include "Core.h"
@@ -117,11 +118,11 @@ struct Paws {
   
   /// Fundamental nuketypes’ families
   struct E(Fork)         *Fork;
+  struct E(Label)        *Label;
   struct E(Execution)    *Execution;
   
   /// Core nuclear extensions’ families
   struct E(Number)       *Number;
-  struct E(Label)        *Label;
 } extern *Paws;
 
 
@@ -153,10 +154,10 @@ void Paws__register_Paws(void) { Paws = malloc(sizeof( struct Paws ));
     .Unit         = NULL,
     
     .Fork         = NULL,
+    .Label        = NULL,
     .Execution    = NULL,
     
-    .Number       = NULL,
-    .Label        = NULL };
+    .Number       = NULL };
   
   memcpy(Paws, &data, sizeof( struct Paws ));
   
@@ -164,10 +165,10 @@ void Paws__register_Paws(void) { Paws = malloc(sizeof( struct Paws ));
 //Paws__register_Unit();
 
   Paws__register_Fork();
+  Paws__register_Label();
 //Paws__register_Execution();
 
 //Paws__register_Number();
-//Paws__register_Label();
 }
 
 

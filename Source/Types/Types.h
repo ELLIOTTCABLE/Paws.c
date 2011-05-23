@@ -1,7 +1,7 @@
-/*  This file forward-declares the two fundamental nuketypes absolutely essential to the operation of Paws’
- *  Nucleus: `struct fork` and `struct execution`. Other nuketypes are encapsulated in nuclear extensions (see
- *  the contents of the `Source/Nuclear Extensions/` directory), some of which are shipped with the `Paws.c`
- *  distribution, and some of which Paws.c will not even (sanely) compile without.
+/*  This file forward-declares the three fundamental nuketypes absolutely essential to the operation of Paws’
+ *  Nucleus: `struct fork`, `struct execution`, and `struct label`. Other nuketypes are encapsulated in “nuclear
+ *  extensions, some of which are shipped with the `Paws.c` distribution (see the contents of the
+ *  `Source/Nuclear Extensions/` directory.)
  *  
  *  Equally importantly, this file defines the `thing` struct utilized throughout the `Paws.c` codebase to
  *  represent objects of any Paws nuketype. This struct encapsulates an arbitrary pointer (pointing to the heap-
@@ -25,6 +25,9 @@
 
           struct e(fork);
 typedef   struct e(fork) *                  e(fork);
+
+          struct e(label);
+typedef   struct e(label) *                 e(label);
 
           struct e(execution);
 typedef   struct e(execution) *             e(execution);

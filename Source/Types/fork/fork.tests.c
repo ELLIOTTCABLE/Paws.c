@@ -31,12 +31,12 @@ CEST(fork, thing) { auto fork // »
   
   SUCCEED; }}
 
-CEST(fork, insert) { auto fork a_fork; auto thing thing1, thing2, thing3, thing4;
-  a_fork = Fork->create();
-  thing1 = Fork->thing(Fork->create());
-  thing2 = Fork->thing(Fork->create());
-  thing3 = Fork->thing(Fork->create());
-  thing4 = Fork->thing(Fork->create());
+CEST(fork, insert) {
+  auto fork  a_fork = Fork->create();
+  auto thing thing1 = Fork->thing(Fork->create());
+  auto thing thing2 = Fork->thing(Fork->create());
+  auto thing thing3 = Fork->thing(Fork->create());
+  auto thing thing4 = Fork->thing(Fork->create());
   
   /* Insert into empty fork */
   Fork->insert(a_fork, thing2, 0);
@@ -60,11 +60,11 @@ CEST(fork, insert) { auto fork a_fork; auto thing thing1, thing2, thing3, thing4
   
   SUCCEED; }}
 
-CEST(fork, prefix) { auto fork a_fork; auto thing thing1, thing2, thing3;
-  a_fork = Fork->create();
-  thing1 = Fork->thing(Fork->create());
-  thing2 = Fork->thing(Fork->create());
-  thing3 = Fork->thing(Fork->create());
+CEST(fork, prefix) {
+  auto fork  a_fork = Fork->create();
+  auto thing thing1 = Fork->thing(Fork->create());
+  auto thing thing2 = Fork->thing(Fork->create());
+  auto thing thing3 = Fork->thing(Fork->create());
   
   Fork->prefix(a_fork, thing3);
   ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing3.pointer );
@@ -80,11 +80,11 @@ CEST(fork, prefix) { auto fork a_fork; auto thing thing1, thing2, thing3;
   
   SUCCEED; }}
 
-CEST(fork, affix) { auto fork a_fork; auto thing thing1, thing2, thing3;
-  a_fork = Fork->create();
-  thing1 = Fork->thing(Fork->create()),
-  thing2 = Fork->thing(Fork->create()),
-  thing3 = Fork->thing(Fork->create());
+CEST(fork, affix) {
+  auto fork  a_fork = Fork->create();
+  auto thing thing1 = Fork->thing(Fork->create());
+  auto thing thing2 = Fork->thing(Fork->create());
+  auto thing thing3 = Fork->thing(Fork->create());
   
   Fork->affix(a_fork, thing1);
   ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing1.pointer );
@@ -100,8 +100,8 @@ CEST(fork, affix) { auto fork a_fork; auto thing thing1, thing2, thing3;
   
   SUCCEED; }}
 
-CEST(fork, at) { auto fork a_fork; auto thing thing1, thing2, thing3;
-  a_fork = Fork->create();
+CEST(fork, at) {
+  auto fork a_fork = Fork->create();
   
   /* Empty `fork`s */
   ASSERT_NULL( Fork->at(a_fork, 5).pointer );
@@ -109,9 +109,9 @@ CEST(fork, at) { auto fork a_fork; auto thing thing1, thing2, thing3;
   ASSERT_NULL( Fork->at(a_fork, 1).pointer );
   ASSERT_NULL( Fork->at(a_fork, 0).pointer );
   
-  thing1 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing1);
-  thing2 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing2);
-  thing3 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing3);
+  auto thing thing1 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing1);
+  auto thing thing2 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing2);
+  auto thing thing3 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing3);
   
   /* Positive indicies */
   ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing1.pointer );

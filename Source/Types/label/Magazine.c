@@ -135,7 +135,7 @@ unique unique__of(unique this, pointer content, unique_size bytes) {
   if (this->bytes == bytes && memcmp(this->content, content, bytes) == 0)
     return this;
   else if (this->overflow == NULL) 
-    return Unique->create(content, bytes); else
+    return this->overflow = Unique->create(content, bytes);
     return unique__of(this->overflow, content, bytes); }
 
 magazine Magazine__create(magazine_length extent) {

@@ -41,6 +41,7 @@ CEST(Unique, of) { auto unique result, unique4, unique5;
   ASSERT_NOT_EQUAL( unique4, unique1 );
   ASSERT_NOT_EQUAL( unique4, unique2 );
   ASSERT_NOT_EQUAL( unique4, unique3 );
+  ASSERT_EQUAL    ( unique4, unique3->overflow );
   ASSERT_STREQUAL ( unique4->content, "foobar" );
   ASSERT_EQUAL    ( unique4->bytes, 7 );
   
@@ -50,6 +51,7 @@ CEST(Unique, of) { auto unique result, unique4, unique5;
   ASSERT_NOT_EQUAL( unique5, unique2 );
   ASSERT_NOT_EQUAL( unique5, unique3 );
   ASSERT_NOT_EQUAL( unique5, unique4 );
+  ASSERT_EQUAL    ( unique5, unique4->overflow );
   ASSERT_STREQUAL ( unique5->content, "abcde" );
   ASSERT_EQUAL    ( unique5->bytes, 6 );
   

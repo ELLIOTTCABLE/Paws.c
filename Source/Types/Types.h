@@ -42,7 +42,7 @@ typedef   struct e(typeRepresentation) *    e(typeRepresentation);
 
 struct e(typeRepresentation) {
   e(pointer)                    family;
-    char                        name[64]; };
+    byte                        name[64]; };
 
 struct e(thing) {
   e(pointer) const              pointer;

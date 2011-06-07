@@ -42,8 +42,8 @@
 
 
 /* Yes, I’m a pedant. Get over it. */
-typedef   void *    e(pointer);
-
+typedef   void *          e(pointer);
+typedef   unsigned char   e(byte);
 
 # if !defined(__has_attribute)
 #   define has_no_has_attribute

@@ -23,7 +23,7 @@ CEST(Unique, initialize) { auto struct unique * // »
   
   SUCCEED; }}
 
-CEST(Unique, of) { auto unique result, unique4, unique5;
+CEST(unique, of) { auto unique result, unique4, unique5;
   auto unique unique1 = Unique->create("widget", 7);
   auto unique unique2 = Unique->create("qux", 4);  unique1->overflow = unique2;
   auto unique unique3 = Unique->create("quux", 5); unique2->overflow = unique3;
@@ -75,7 +75,7 @@ CEST(Magazine, initialize) { auto struct magazine * // »
   
   SUCCEED; }}
 
-CEST(Magazine, of) { auto unique unique1, unique2, unique3, result1, result2, result3; auto magazine // »
+CEST(magazine, of) { auto unique unique1, unique2, unique3, result1, result2, result3; auto magazine // »
   the_magazine = Magazine->create(64);
   
   unique1 = Magazine->of(the_magazine, "foo", 4);
@@ -105,7 +105,7 @@ CEST(Magazine, of) { auto unique unique1, unique2, unique3, result1, result2, re
   // TODO: Add `SANITY()` checks for, well, everything.
   SUCCEED; }}
 
-CEST(Magazine, _hash) { auto magazine_length a_hash;
+CEST(magazine, _hash) { auto magazine_length a_hash;
   
   a_hash = _magazine__hash(Magazine->create(1<<3), "foobar", 7);
   ASSERT( a_hash <= 1 << 3);

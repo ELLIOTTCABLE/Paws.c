@@ -10,13 +10,17 @@
 
 #     include "Magazine.c"
 #     include "Types/fork/LL.c"
+
+#     include <stdbool.h>
 # if defined(LABEL_C__BEHEST)
 #   undef DECLARATIONS
 # endif
 
 
 struct e(label) {
-  e(ll)   content; };
+  e(ll)       content;
+  e(unique)   characters; };
+  
 
 
 struct E(Label) {
@@ -24,12 +28,14 @@ struct E(Label) {
   
   // Functions ==============
   /// `Label` family functions
-  e(label)              (*create)(void);
+  e(label)              (*create)             ( e(magazine) with, e(charray) characters );
     struct e(label) *   (*allocate)(void);
-  e(label)              (*initialize)         ( struct e(label)* this );
+  e(label)              (*initialize)         ( struct e(label)* this, e(magazine) with, e(charray) characters );
   
   /// `struct label` instance functions
   e(thing)              (*thing)              ( e(label) this );
+  e(charray)            (*characters)         ( e(label) this );
+    bool                (*equal)              ( e(label) this, e(label) that );
 } IF_INTERNALIZED(extern *Label);
 
 extern    void MAKE_EXTERNAL(register_Label)(void);
@@ -47,12 +53,19 @@ extern    void MAKE_EXTERNAL(register_Label)(void);
 #   include <string.h>
 # undef  DECLARATIONS
 
+# define STRNLEN(STRING, N) \
+    (charray)memchr(STRING, '\0', N) - STRING//;
 
-static label            Label__create(void);
+# define UNIQUE_SIZE_MAX UINT_MAX
+
+
+static label            Label__create            (magazine with, charray characters);
 static struct label *   Label__allocate(void);
-static label            Label__initialize         (label this);
+static label            Label__initialize        (struct label* this, magazine with, charray characters);
 
-static thing            label__thing              (label this);
+static thing            label__thing             (label this);
+static charray          label__characters        (label this);
+static bool             label__equal             (label this, label that);
 
 
    IF_EXTERNALIZED(static) struct Label * // »
@@ -73,20 +86,23 @@ void Paws__register_Label(void) { Label   = malloc(sizeof( struct Label ));
     .allocate     = Label__allocate,
     .initialize   = Label__initialize,
     
-    .thing        = label__thing };
+    .thing        = label__thing,
+    .characters   = label__characters,
+    .equal        = label__equal };
   
   memcpy(data.Label, &type, sizeof( struct typeRepresentation ));
   memcpy(Label,      &data, sizeof( struct Label )); }
 
 
-label Label__create(void) {
-  return Label->initialize(Label->allocate()); }
+label Label__create(magazine with, charray characters) {
+  return Label->initialize(Label->allocate(), with, characters); }
 
 struct label * Label__allocate(void) {
   return malloc(sizeof( struct label )); }
 
-label Label__initialize(label this) {
+label Label__initialize(struct label* this, magazine with, charray characters) {
   this->content = LL->create();
+  this->characters = Magazine->of(with, characters, STRNLEN(characters, UNIQUE_SIZE_MAX));
   
   return this; }
 
@@ -94,5 +110,11 @@ thing label__thing(label this) { auto struct thing // »
   something = { .pointer = this, .isa = Label->Label };
   
   return something; }
+
+charray label__characters(label this) {
+  return this->characters->content; }
+
+bool label__equal(label this, label that) {
+  return this->characters == that->characters; }
 
 # endif //!defined(LABEL_IMPLEMENTATION) && !defined(DECLARATIONS)

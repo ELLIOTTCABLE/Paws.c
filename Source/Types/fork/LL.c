@@ -1,21 +1,3 @@
-/*  `ll` is Paws’ doubly-linked-list data structure; the core storage format responsible for `fork`s’ element
- *  storage (and, thusly, the element storage behind every `thing` in Paws’ libspace.)
- *  
- *  NOTE: This is not a traditional linked-list! There are two major differences of which you need to be aware:
- *        
- *        - We don’t iterate `element`s until reaching a `NULL` pointer; instead, we store (and maintain) the
- *          length (in `element`s) and iterate based on that. This means that directly manipulating the `length`
- *          of an `ll` (or manipulating the `first` or `last` pointers) is very dangerous.
- *          Use the provided functions!
- *        - When `element`s are rearranged, they *do not* unnecessarily drop their assocations with other
- *          `element`s: they will attempt to retain them, if at all possible. We use this to splice sublists of
- *          `element`s onto eachother, but it makes it more difficult to avoid “zombie elements.” I repeat: Use
- *          the provided functions!
- *        - This is not a ‘purist’ implementation of the linked-lists you learned in your data structures and
- *          algorithms class; we don’t pass around individual nodes. Instead, we define a wrapper type that
- *          stores metadata about the linked-list structure; this wrapper (the `ll` type) is what we pass around
- *          and store as our “linked list,” instead of a given `element` reference.
- */
 # if !defined(LL_DECLARATIONS)
 #   define    LL_DECLARATIONS
 
@@ -144,11 +126,6 @@ void Paws__register_LL(void) { LL   = malloc(sizeof( struct LL ));
   memcpy(LL, &data, sizeof( struct LL )); }
 
 
-/* This method creates a new `element` for a given `thing`. `next` and `previous` will also be initialized to a
- * `NULL` pointer.
- * 
- * Expects a `thing` as an argument, to be stored on this `element` as `e`.
- */
 element Element__create(thing target) {
   return Element->initialize(Element->allocate(), target); }
 
@@ -163,14 +140,6 @@ element Element__initialize(struct element* this, thing target) {
   
   return this; }
 
-/* This method inserts another element *before* this element in the chain of a linked list.
- * 
- * If there’s already a element attached before this element, and there *isn’t* one attached before the element
- * being inserted, then that next- element will be affixed to our new element, thus keeping the chain intact if
- * possible.
- * 
- * Note: See the notes on `Element->affix()`.
- */
 void element__prefix(element this, element other) {
   if (this->previous != NULL) {
     if (other->previous == NULL)
@@ -183,15 +152,6 @@ void element__prefix(element this, element other) {
   other->next     = this;
   this->previous  = other; }
 
-/* This method inserts another element *after* this element in the chain of a linked list.
- * 
- * If there’s already a element attached after this element, and there *isn’t* one attached after the element
- * being inserted, then that next-element will be affixed to our new element, thus keeping the chain intact if
- * possible.
- * 
- * Note: Realize that due to that copy-next mechanic, you can splice element-strings on top of eachother, but all
- *       elements *after* this element in the original chain will be lost.
- */
 void element__affix(element this, element other) {
   if (this->next != NULL) {
     if (other->next == NULL)
@@ -205,8 +165,6 @@ void element__affix(element this, element other) {
   this->next      = other; }
 
 
-/* This method initializes a new `ll`, with no elements. The `first` and `last` are set to `NULL` pointers, and
- * `length` is initialized to zero. */
 ll LL__create(void) {
   return LL->initialize(LL->allocate()); }
 
@@ -234,11 +192,6 @@ void ll__posterior_insert(ll this, element child, ll_size idx) {
     Element->prefix(LL->at(this, idx), child);
     this->length++; } }
 
-/* This method prefixes a new child `element` onto an `ll`. This will ensure that the first element in the `ll`,
- * after the appending, is the new one.
- * 
- * Takes two arguments, the prefixee (`this`), and a `element` to be prefixed onto it as a child.
- */
 void ll__prefix(ll this, element child) {
   if (this->length < 1)
     this->last = child;
@@ -247,11 +200,6 @@ void ll__prefix(ll this, element child) {
   this->first = child;
   this->length++; }
 
-/* This method affixes a new child `element` onto an `ll`. This will ensure that the last element in the `ll`,
- * after the appending, is the new one.
- * 
- * Takes two arguments, the affixee (`this`), and a `element` to be affixed onto it as a child.
- */
 void ll__affix(ll this, element child) {
   if (this->length < 1)
     this->first = child;
@@ -260,10 +208,6 @@ void ll__affix(ll this, element child) {
   this->last = child;
   this->length++; }
 
-/* This method returns a `element` at a given index in an `ll`.
- * 
- * Takes two arguments, the indexee (`this`), and an integer `idx`.
- */
 element ll__at(ll this, ll_size idx) { auto element result; ll_size i;
   
   if (idx >= this->length) return NULL;

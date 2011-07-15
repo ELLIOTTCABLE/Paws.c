@@ -1,3 +1,5 @@
+### Warning: This file is currently out-of-date!
+
 When reading portions of this codebase, there’s a couple of things you should be aware of:
 
 1.  We *really like* using macros to modify how code is passed around. A thorough scan of the `EXTERNALIZE`

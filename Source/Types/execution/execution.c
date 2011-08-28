@@ -9,7 +9,7 @@
 #     include "Types/Types.h"
       
 #     include "Types/fork/ll.c"
-#     include "AST.c"
+#     include "Script.c"
 # if defined(EXECUTION_C__BEHEST)
 #   undef DECLARATIONS
 # endif
@@ -50,7 +50,6 @@ extern    void MAKE_EXTERNAL(register_Execution)(void);
 
 # define DECLARATIONS
 #   include "Paws.c"
-#   include "ast.c"
     
 #   include <stdlib.h>
 #   include <string.h>
@@ -70,7 +69,6 @@ static                       void execution__advance           (execution this);
 void Paws__register_Execution(void) { Execution   = malloc(sizeof( struct Execution ));
                                 Paws->Execution   = Execution;
   Paws__register_Node();
-  Paws__register_AST();
   
   auto struct typeRepresentation // »
   type = { .family = Execution, .name = "execution" };

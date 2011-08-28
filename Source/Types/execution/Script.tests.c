@@ -1,4 +1,4 @@
-# include "AST.c"
+# include "Script.c"
 
 # define DECLARATIONS
 #   include "Cest.c/Source/Cest.c"
@@ -22,102 +22,78 @@ CEST(Node, allocate) { auto struct node * // »
   
   SUCCEED; }}
 
-CEST(Node, initialize_phrase) { auto struct node * // »
-  a_node_pointer = Node->allocate();
+CEST(Node, initialize_terminal) { auto struct node * // »
+  a_terminal_pointer = Node->allocate();
   
   auto thing something = SOMETHING;
-  Node->initialize_phrase(a_node_pointer, something);
-  ASSERT_NULL ( (*a_node_pointer).next );
-  ASSERT_EQUAL( (*a_node_pointer).isa, PHRASE );
-  ASSERT_NOT  ( (*a_node_pointer).last );
-  ASSERT_ZERO ( (*a_node_pointer).start );
-  ASSERT_ZERO ( (*a_node_pointer).end );
-  ASSERT_EQUAL(((*a_node_pointer).content.payload).pointer, something.pointer );
+  Node->initialize_terminal(a_terminal_pointer, something);
+  ASSERT_NULL ( (*a_terminal_pointer).next );
+  ASSERT_EQUAL( (*a_terminal_pointer).isa, TERMINAL );
+  ASSERT_NOT  ( (*a_terminal_pointer).last );
+  ASSERT_EQUAL(((*a_terminal_pointer).content.payload).pointer, something.pointer );
   
   SUCCEED; }}
 
 CEST(Node, initialize_expression) { auto struct node * // »
-  a_node_pointer = Node->allocate();
+  an_expression_pointer = Node->allocate();
   
-  Node->initialize_expression(a_node_pointer);
-  ASSERT_NULL ( (*a_node_pointer).next );
-  ASSERT_EQUAL( (*a_node_pointer).isa, EXPRESSION );
-  ASSERT_NOT  ( (*a_node_pointer).last );
-  ASSERT_ZERO ( (*a_node_pointer).start );
-  ASSERT_ZERO ( (*a_node_pointer).end );
-  ASSERT_NULL ( (*a_node_pointer).content.child );
+  Node->initialize_expression(an_expression_pointer);
+  ASSERT_NULL ( (*an_expression_pointer).next );
+  ASSERT_EQUAL( (*an_expression_pointer).isa, EXPRESSION );
+  ASSERT_NOT  ( (*an_expression_pointer).last );
+  ASSERT_NULL ( (*an_expression_pointer).content.child );
   
   SUCCEED; }}
 
-CEST(Node, initialize_scope) { auto struct node * // »
-  a_node_pointer = Node->allocate();
-  
-  Node->initialize_scope(a_node_pointer);
-  ASSERT_NULL ( (*a_node_pointer).next );
-  ASSERT_EQUAL( (*a_node_pointer).isa, SCOPE );
-  ASSERT_NOT  ( (*a_node_pointer).last );
-  ASSERT_ZERO ( (*a_node_pointer).start );
-  ASSERT_ZERO ( (*a_node_pointer).end );
-  ASSERT_NULL ( (*a_node_pointer).content.child );
-  
-  SUCCEED; }}
-
-CEST(Node, parent) { auto node result;
-  auto node parent = Node->scope();
-  auto node child  = Node->expression(); child ->next = parent; child ->last = true;
-                result    = Node->parent(child);
+CEST(node, parent) { auto node result;
+  auto expression parent = Node->expression();
+  auto expression child  = Node->expression(); child ->next = parent; child ->last = true;
+                result          = Node->parent(child);
   ASSERT_EQUAL( result, parent );
   
-  auto node child1 = Node->expression(); 
-  auto node child2 = Node->expression(); child1->next = child2;
-  auto node child3 = Node->expression(); child2->next = child3;
-                                         child3->next = parent; child3->last = true;
-                result    = Node->parent(child1);
+  auto expression child1 = Node->expression(); 
+  auto expression child2 = Node->expression(); child1->next = child2;
+  auto expression child3 = Node->expression(); child2->next = child3;
+                                               child3->next = parent; child3->last = true;
+                result          = Node->parent(child1);
   ASSERT_EQUAL( result, parent );
   
   
-  auto node childA = Node->expression(); 
-  auto node childB = Node->expression(); childA->next = childB;
-  auto node childC = Node->expression(); childB->next = childC;
-                                         childC->next = NULL;   childC->last = true;
-               result     = Node->parent(childA);
+  auto expression childA = Node->expression(); 
+  auto expression childB = Node->expression(); childA->next = childB;
+  auto expression childC = Node->expression(); childB->next = childC;
+                                               childC->next = NULL;   childC->last = true;
+               result           = Node->parent(childA);
   ASSERT_NULL( result );
   
   SUCCEED; }}
 
-CEST(Node, child) { auto node result;
-  /* `EXPRESSION` as a child of a `SCOPE`: `(:SCOPE (:EXPRESSION))` */
-  auto node scope       = Node->scope();
-  auto node expression  = Node->expression(); expression->next = scope; expression->last = true;
-                                              scope->content.child = expression;
-                result  = Node->child(scope);
-  ASSERT_EQUAL( result, expression );
-  
+CEST(node, child) { auto node result;
   /* `EXPRESSION` as a child of an `EXPRESSION`: `(:EXPRESSION (:EXPRESSION))` */
-  auto node parent_expression = Node->expression();
-  auto node  child_expression = Node->expression();  child_expression->next = parent_expression;
-                                                     child_expression->last = true;
-                                                    parent_expression->content.child = child_expression;
-                result = Node->child(parent_expression);
-  ASSERT_EQUAL( result, child_expression );
+  auto expression parent = Node->expression();
+  auto expression  child = Node->expression();  child->next = parent;
+                                                child->last = true;
+                                                parent->content.child = child;
+                result            = Node->child(parent);
+  ASSERT_EQUAL( result, child );
   
   /* `EXPRESSION` with no child: `(:EXPRESSION)` */
-  auto node another_expression = Node->expression();
-               result          = Node->parent(another_expression);
+  auto expression another = Node->expression();
+               result     = Node->parent(another);
   ASSERT_NULL( result );
   
   SOMEDAY;
-  /* Erraneous `PHRASE` node: `(:PHRASE, <NULL>)` */
-  //auto node phrase = Node->phrase(SOMETHING);
-  //ASSERT_ERRANEOUS( Node->child(phrase) );
+  /* Erraneous `TERMINAL` node: `(:TERMINAL, <NULL>)` */
+  //auto node terminal = Node->terminal(SOMETHING);
+  //ASSERT_ERRANEOUS( Node->child(terminal) );
   
   SUCCEED; }}
 
-CEST(Node, payload) { auto node phrase; auto thing result
+CEST(node, payload) { auto terminal container; auto thing result
 , something = SOMETHING;
-  phrase = Node->phrase(something);
+  container = Node->terminal(something);
   
-  result = Node->payload(phrase);
+  result = Node->payload(container);
   ASSERT_EQUAL( result.pointer, something.pointer );
   
   SOMEDAY;
@@ -131,7 +107,7 @@ CEST(Node, payload) { auto node phrase; auto thing result
   
   SUCCEED; }}
 
-CEST(Node, affix) { auto node // »
+CEST(node, affix) { auto expression // »
   expression1   = Node->expression(),
   expression2   = Node->expression(),
   expression3   = Node->expression(),
@@ -225,25 +201,25 @@ CEST(Node, affix) { auto node // »
   
   SUCCEED; }}
 
-CEST(Node, descend) { auto node // »
-  scope         = Node->scope(),
-  expression1   = Node->expression(),
-  expression2   = Node->expression();
+CEST(node, descend) { auto expression // »
+  parent    = Node->expression(),
+  child1    = Node->expression(),
+  child2    = Node->expression();
   
-  ASSERT_NULL ( scope->content.child );
-  ASSERT_NULL ( expression1->next );
-  ASSERT_NOT  ( expression1->last );
-  ASSERT_NOT  ( expression2->last );
+  ASSERT_NULL ( parent->content.child );
+  ASSERT_NULL ( child1->next );
+  ASSERT_NOT  ( child1->last );
+  ASSERT_NOT  ( child2->last );
   
-  Node->descend(scope, expression1);
-  ASSERT_EQUAL( scope->content.child, expression1 );
-  ASSERT      ( expression1->last );
+  Node->descend(parent, child1);
+  ASSERT_EQUAL( parent->content.child, child1 );
+  ASSERT      ( child1->last );
   
-  Node->descend(scope, expression2);
-  ASSERT_EQUAL( scope->content.child, expression1 );
-  ASSERT_EQUAL( expression1->next, expression2 );
-  ASSERT_NOT  ( expression1->last );
-  ASSERT      ( expression2->last );
+  Node->descend(parent, child2);
+  ASSERT_EQUAL( parent->content.child, child1 );
+  ASSERT_EQUAL( child1->next, child2 );
+  ASSERT_NOT  ( child1->last );
+  ASSERT      ( child2->last );
   
   SOMEDAY;
   // test for errors here

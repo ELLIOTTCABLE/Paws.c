@@ -44,7 +44,7 @@ right now):
     #C99 -ISource \
     #  Source/Types/fork/LL.tests.c \
     #  Source/Types/fork/fork.tests.c \
-    #  Source/Types/execution/AST.c \
+    #  Source/Types/execution/Script.c \
     #  Source/Types/execution/execution.c \
     #  Source/Types/label/Magazine.tests.c \
     #  Source/Types/label/label.tests.c \
@@ -54,7 +54,7 @@ right now):
     C99   -IVendor -DCEST__NO_AUTO Vendor/Cest.c/Source/Cest.c   -ISource \
       Source/Types/fork/LL.tests.c \
       Source/Types/fork/fork.tests.c \
-      Source/Types/execution/AST.tests.c \
+      Source/Types/execution/Script.tests.c \
       Source/Types/execution/execution.tests.c \
       Source/Types/label/Magazine.tests.c \
       Source/Types/label/label.tests.c \
@@ -64,7 +64,7 @@ right now):
     C99 -ggdb   -IVendor -DCEST__NO_AUTO Vendor/Cest.c/Source/Cest.c   -ISource \
       Source/Types/fork/LL.tests.c \
       Source/Types/fork/fork.tests.c \
-      Source/Types/execution/AST.tests.c \
+      Source/Types/execution/Script.tests.c \
       Source/Types/execution/execution.tests.c \
       Source/Types/label/Magazine.tests.c \
       Source/Types/label/label.tests.c \

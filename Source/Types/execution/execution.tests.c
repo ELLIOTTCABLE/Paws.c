@@ -5,12 +5,12 @@
 # undef  DECLARATIONS
 
 
-# define A_SCOPE _make_a_scope()//;
+# define SOME_EXPRESSION _make_an_expression()//;
 
-static node _make_a_scope(void) { auto node // »
-  a_scope = Node->scope();
+static node _make_an_expression(void) { auto expression // »
+  an_expression = Node->expression();
   
-  return a_scope; }
+  return an_expression; }
 
 CEST(Execution, allocate) { auto struct execution * // »
   an_execution_pointer = Execution->allocate();
@@ -22,20 +22,20 @@ CEST(Execution, allocate) { auto struct execution * // »
 
 CEST(Execution, initialize) {
   auto execution an_execution = Execution->allocate();
-  auto node a_node = Node->scope();
+  auto expression an_expression = Node->expression();
   
-  Execution->initialize(an_execution, a_node);
+  Execution->initialize(an_execution, an_expression);
   ASSERT_NULL( an_execution->content->first );
   ASSERT_NULL( an_execution->content->last );
   ASSERT_ZERO( an_execution->content->length );
   
-  ASSERT_EQUAL( an_execution->position, a_node );
+  ASSERT_EQUAL( an_execution->position, an_expression );
   ASSERT_NULL ( an_execution->juxtaposees );
   
   SUCCEED; }}
 
 CEST(execution, thing) {
-  auto execution an_execution = Execution->create(A_SCOPE);
+  auto execution an_execution = Execution->create(SOME_EXPRESSION);
   
   ASSERT_EQUAL( Execution->thing(an_execution).pointer, an_execution );
   ASSERT_EQUAL( Execution->thing(an_execution).isa,     Execution->Execution );
@@ -51,10 +51,10 @@ CEST(execution, advance) {
    *  Since `execution->advance()` does not actually *preform* any juxtapositions, we needn’t be concerned with
    *  the Paws semantics of this code; simply how `execution->advance()` will progressively crawl through it.
    */
-  auto node   root = Node->scope();
-  auto node  first = Node->expression(); Node->descend(root, first);
-  auto node second = Node->expression(); Node->descend(root, second);
-  auto node    sub = Node->expression(); Node->descend(second, sub);
+  auto expression   root = Node->expression();
+  auto expression  first = Node->expression(); Node->descend(root, first);
+  auto expression second = Node->expression(); Node->descend(root, second);
+  auto expression    sub = Node->expression(); Node->descend(second, sub);
   
   //        ┌┐ 
   //      { () ( () ) }

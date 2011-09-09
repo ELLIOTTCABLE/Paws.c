@@ -6,10 +6,10 @@
 #   define DECLARATIONS
 # endif
 #     include "Core.h"
-#     include "Types/Types.h"
+#     include "Nuketypes/Nuketypes.h"
 
 #     include "Magazine.c"
-#     include "Types/fork/LL.c"
+#     include "Metadata/LL.c"
 
 #     include <stdbool.h>
 # if defined(LABEL_C__BEHEST)

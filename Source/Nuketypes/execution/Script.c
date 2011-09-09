@@ -6,7 +6,7 @@
 #   define DECLARATIONS
 # endif
 #     include "Core.h"
-#     include "Types/Types.h"
+#     include "Nuketypes/Nuketypes.h"
       
 #     include <stdbool.h>
 # if defined(SCRIPT_C__BEHEST)

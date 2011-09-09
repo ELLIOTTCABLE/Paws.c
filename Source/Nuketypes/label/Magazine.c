@@ -6,7 +6,7 @@
 #   define DECLARATIONS
 # endif
 #     include "Core.h"
-#     include "Types/Types.h"
+#     include "Nuketypes/Nuketypes.h"
 # if defined(MAGAZINE_C__BEHEST)
 #   undef DECLARATIONS
 # endif

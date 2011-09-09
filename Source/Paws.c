@@ -15,12 +15,13 @@
 /*#     include "Ancillary/Threading/Threading.c" */
 /*#     include "Ancillary/Unit/Unit.c" */
 
-#       include "Types/fork/fork.c"
-#       include "Types/label/label.c"
-#       include "Types/execution/execution.c"
+#       include "Metadata/Metadata.c"
+
+#       include "Nuketypes/label/label.c"
+#       include "Nuketypes/execution/execution.c"
 
 #       include "Core.h"
-#       include "Types/Types.h"
+#       include "Nuketypes/Nuketypes.h"
 #   if defined(PAWS_C__BEHEST)
 #     undef DECLARATIONS
 #   endif

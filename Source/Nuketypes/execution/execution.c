@@ -6,9 +6,9 @@
 #   define DECLARATIONS
 # endif
 #     include "Core.h"
-#     include "Types/Types.h"
+#     include "Nuketypes/Nuketypes.h"
       
-#     include "Types/fork/ll.c"
+#     include "Metadata/LL.c"
 #     include "Script.c"
 # if defined(EXECUTION_C__BEHEST)
 #   undef DECLARATIONS

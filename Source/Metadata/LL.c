@@ -34,13 +34,13 @@ struct e(ll) {
 struct E(Element) {
   // Functions ==============
   /// `Element` family functions
-  e(element)                    (*create)             ( e(blob) it );
+  e(element)                    (*create)             ( e(blob) content );
     struct e(element) *         (*allocate)(void);
-  e(element)                    (*initialize)         ( struct e(element)* this, e(blob) it );
+  e(element)                    (*initialize)         ( struct e(element)* it, e(blob) content );
   
   /// `struct element` instance functions
-                           void (*prefix)             ( e(element) this, e(element) other );
-                           void (*affix)              ( e(element) this, e(element) other );
+                           void (*prefix)             ( e(element) this, e(element) it );
+                           void (*affix)              ( e(element) this, e(element) it );
 } IF_INTERNALIZED(extern *Element);
 
 struct E(LL) {
@@ -48,13 +48,13 @@ struct E(LL) {
   /// `LL` family functions
   e(ll)                   (*create)(void);
     struct e(ll) *        (*allocate)(void);
-  e(ll)                   (*initialize)         ( struct e(ll)* this );
+  e(ll)                   (*initialize)         ( struct e(ll)* it );
   
   /// `struct ll` instance functions
-                     void (*anterior_insert)    ( e(ll) this, e(element) child, e(ll_size) idx );
-                     void (*posterior_insert)   ( e(ll) this, e(element) child, e(ll_size) idx );
-                     void (*prefix)             ( e(ll) this, e(element) child );
-                     void (*affix)              ( e(ll) this, e(element) child );
+                     void (*anterior_insert)    ( e(ll) this, e(element) it, e(ll_size) idx );
+                     void (*posterior_insert)   ( e(ll) this, e(element) it, e(ll_size) idx );
+                     void (*prefix)             ( e(ll) this, e(element) it );
+                     void (*affix)              ( e(ll) this, e(element) it );
   e(element)              (*at)                 ( e(ll) this,                   e(ll_size) idx );
 } IF_INTERNALIZED(extern *LL);
 
@@ -73,156 +73,147 @@ extern    void MAKE_EXTERNAL(register_LL)(void);
 # undef  DECLARATIONS
 
 
-static element                  Element__create            (blob it);
+static element                  Element__create            (blob content);
 static struct element *         Element__allocate(void);
-static element                  Element__initialize        (struct element* this, blob it);
+static element                  Element__initialize        (struct element* it, blob content);
 
-static                     void element__prefix            (element this,         element other);
-static                     void element__affix             (element this,         element other);
+static                     void element__prefix            (element this,         element it);
+static                     void element__affix             (element this,         element it);
 
 
      IF_EXTERNALIZED(static) struct Element * // »
                                     Element   = NULL;
 void Paws__register_Element(void) { Element   = malloc(sizeof( struct Element ));
   
-  auto struct Element // »
-  data = {
-    .create       = Element__create,
-    .allocate     = Element__allocate,
-    .initialize   = Element__initialize,
+  auto struct Element _ = // »
+  { .create       = Element__create
+  , .allocate     = Element__allocate
+  , .initialize   = Element__initialize
     
-    .prefix       = element__prefix,
-    .affix        = element__affix };
+  , .prefix       = element__prefix
+  , .affix        = element__affix };
   
-  memcpy(Element, &data, sizeof( struct Element )); }
+  memcpy(Element, &_, sizeof( struct Element )); }
 
 
 static ll                 LL__create(void);
 static struct ll *        LL__allocate(void);
-static ll                 LL__initialize         (struct ll* this);
+static ll                 LL__initialize         (struct ll* it);
 
-static               void ll__anterior_insert    (ll this, element child, ll_size idx);
-static               void ll__posterior_insert   (ll this, element child, ll_size idx);
-static               void ll__prefix             (ll this, element child);
-static               void ll__affix              (ll this, element child);
+static               void ll__anterior_insert    (ll this, element it, ll_size idx);
+static               void ll__posterior_insert   (ll this, element it, ll_size idx);
+static               void ll__prefix             (ll this, element it);
+static               void ll__affix              (ll this, element it);
 static element            ll__at                 (ll this,                ll_size idx);
 
 IF_EXTERNALIZED(static) struct LL * // »
                                LL   = NULL;
 void Paws__register_LL(void) { LL   = malloc(sizeof( struct LL ));
   
-  auto struct LL // »
-  data = {
-    .create             = LL__create,
-    .allocate           = LL__allocate,
-    .initialize         = LL__initialize,
+  auto struct LL _ = // »
+  { .create             = LL__create
+  , .allocate           = LL__allocate
+  , .initialize         = LL__initialize
     
-    .anterior_insert    = ll__anterior_insert,
-    .posterior_insert   = ll__posterior_insert,
-    .prefix             = ll__prefix,
-    .affix              = ll__affix,
-    .at                 = ll__at };
+  , .anterior_insert    = ll__anterior_insert
+  , .posterior_insert   = ll__posterior_insert
+  , .prefix             = ll__prefix
+  , .affix              = ll__affix
+  , .at                 = ll__at };
   
-  memcpy(LL, &data, sizeof( struct LL )); }
+  memcpy(LL, &_, sizeof( struct LL )); }
 
 
-element Element__create(blob it) {
-  return Element->initialize(Element->allocate(), it); }
+element Element__create(blob content) {
+  return Element->initialize(Element->allocate(), content); }
 
 struct element * Element__allocate(void) {
   return malloc(sizeof( struct element )); }
 
-element Element__initialize(struct element* this, blob it) {
-  this->next     = NULL;
-  this->previous = NULL;
-  memcpy(&this->blob, &it, sizeof( struct blob ));
-  /* LEAK: Well, what exactly can we do? It’s not like we have a GC yet… */
+element Element__initialize(struct element* it, blob content) {
+  it->next     = NULL;
+  it->previous = NULL;
+  memcpy(&it->blob, &content, sizeof( struct blob ));
   
-  return this; }
+  return it; }
 
-void element__prefix(element this, element other) {
+void element__prefix(element this, element it) {
   if (this->previous != NULL) {
-    if (other->previous == NULL)
-      element__prefix(other, this->previous);
-    else {
-      this->previous->next = NULL;
-      if (other->next != NULL)
-        other->next->previous = NULL; } }
+    if (it->previous == NULL)     element__prefix(it, this->previous);
+                         else {   this->previous->next = NULL;
+        if (it->next != NULL)       it->next->previous = NULL; } }
   
-  other->next     = this;
-  this->previous  = other; }
+  it->next       = this;
+  this->previous = it; }
 
-void element__affix(element this, element other) {
+void element__affix(element this, element it) {
   if (this->next != NULL) {
-    if (other->next == NULL)
-      element__affix(other, this->next);
-    else {
-      this->next->previous = NULL;
-      if (other->previous != NULL)
-        other->previous->next = NULL; } }
+    if (it->next == NULL)         element__affix(it, this->next);
+                     else {       this->next->previous = NULL;
+      if (it->previous != NULL)     it->previous->next = NULL; } }
   
-  other->previous = this;
-  this->next      = other; }
+  it->previous = this;
+  this->next   = it; }
 
 
 ll LL__create(void) {
   return LL->initialize(LL->allocate()); }
 
-struct ll * LL__allocate(void) {
+struct ll* LL__allocate(void) {
   return malloc(sizeof( struct ll )); }
 
-ll LL__initialize(struct ll* this) {
-  this->first  = NULL;
-  this->last   = NULL;
-  this->length = 0;
+ll LL__initialize(struct ll* it) {
+  it->first  = NULL;
+  it->last   = NULL;
+  it->length = 0;
   
-  return this; }
+  return it; }
 
-void ll__anterior_insert(ll this, element child, ll_size idx) {
+void ll__anterior_insert(ll this, element it, ll_size idx) {
   if (idx == 0)
     /* TODO: Error condition, cannot anterior-insert at first position */;
   else {
-    Element->affix(LL->at(this, idx - 1), child);
+    Element->affix(LL->at(this, idx - 1), it);
     this->length++; } }
 
-void ll__posterior_insert(ll this, element child, ll_size idx) {
+void ll__posterior_insert(ll this, element it, ll_size idx) {
   if (idx == this->length)
     /* TODO: Error condition, cannot posterior-insert at last position */;
   else {
-    Element->prefix(LL->at(this, idx), child);
+    Element->prefix(LL->at(this, idx), it);
     this->length++; } }
 
-void ll__prefix(ll this, element child) {
+void ll__prefix(ll this, element it) {
   if (this->length < 1)
-    this->last = child;
+    this->last = it;
   else
-    Element->prefix( this->first, child );
-  this->first = child;
+    Element->prefix(this->first, it);
+  this->first = it;
   this->length++; }
 
-void ll__affix(ll this, element child) {
+void ll__affix(ll this, element it) {
   if (this->length < 1)
-    this->first = child;
+    this->first = it;
   else
-    Element->affix( this->last, child );
-  this->last = child;
+    Element->affix(this->last, it);
+  this->last = it;
   this->length++; }
 
-element ll__at(ll this, ll_size idx) { auto element result; ll_size i;
+element ll__at(ll this, ll_size idx) { auto element it; ll_size i;
   
   if (idx >= this->length) return NULL;
   
   if (idx <= this->length / 2) {
-    result = this->first;
+    it = this->first;
     for (i = 0; i < idx; ++i)
-      result = result->next;
+      it = it->next;
   } else {
-    result = this->last;
+    it = this->last;
     for (i = this->length - 1; i > idx; --i)
-      result = result->next;
+      it = it->next;
   }
   
-  return result; }
+  return it; }
 
 
 # endif //!defined(LL_IMPLEMENTATION) && !defined(DECLARATIONS)

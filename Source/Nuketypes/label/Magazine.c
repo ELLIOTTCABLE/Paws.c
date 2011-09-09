@@ -47,7 +47,7 @@ struct E(Magazine) {
   //  
   //  
   //  NOTE: `->initialize()` truncates its `extent` argument to the closest power of two below the given integer.
-  e(magazine)               (*create)             ( e(magazine_length) extent );
+  e(magazine)               (*create)                                       ( e(magazine_length) extent );
     struct e(magazine) *    (*allocate)(void);
   e(magazine)               (*initialize)         ( struct e(magazine)* this, e(magazine_length) extent );
   
@@ -74,48 +74,45 @@ static const magazine_length offset_basis = 2166136261;
 static const magazine_length FNV_prime = (1 << 24) + (1 << 8) + 0x93;
 
 
-static unique             Unique__create             (                     pointer content, unique_size bytes);
+static unique             Unique__create                                  (pointer content, unique_size bytes);
 static struct unique *    Unique__allocate(void);
 static unique             Unique__initialize         (struct unique* this, pointer content, unique_size bytes);
 
-static unique             unique__of                 (unique this,         pointer content, unique_size bytes);
+static unique             unique__of                        (unique  this, pointer content, unique_size bytes);
 
 
     IF_EXTERNALIZED(static) struct Unique * // »
                                    Unique     = NULL;
 void Paws__register_Unique(void) { Unique     = malloc(sizeof( struct Unique ));
   
-  auto struct Unique // »
-  data = {
-    .create       = Unique__create,
-    .allocate     = Unique__allocate,
-    .initialize   = Unique__initialize,
+  auto struct Unique _ = // »
+  { .create       = Unique__create
+  , .allocate     = Unique__allocate
+  , .initialize   = Unique__initialize
     
-    .of           = unique__of };
+  , .of           = unique__of };
   
-  memcpy(Unique, &data, sizeof( struct Unique )); }
+  memcpy(Unique, &_, sizeof( struct Unique )); }
 
 
-static magazine             Magazine__create             (magazine_length extent);
+static magazine             Magazine__create                                    (magazine_length extent);
 static struct magazine *    Magazine__allocate(void);
 static magazine             Magazine__initialize         (struct magazine* this, magazine_length extent);
 
-static unique               magazine__of                 (magazine this, pointer content, unique_size bytes);
-static magazine_length     _magazine__hash               (magazine this, pointer content, unique_size bytes);
+static unique               magazine__of                        (magazine  this, pointer content, unique_size bytes);
 
       IF_EXTERNALIZED(static) struct Magazine * // »
                                      Magazine     = NULL;
 void Paws__register_Magazine(void) { Magazine     = malloc(sizeof( struct Magazine ));
   
-  auto struct Magazine // »
-  data = {
-    .create       = Magazine__create,
-    .allocate     = Magazine__allocate,
-    .initialize   = Magazine__initialize,
+  auto struct Magazine _ = // »
+  { .create       = Magazine__create
+  , .allocate     = Magazine__allocate
+  , .initialize   = Magazine__initialize
     
-    .of           = magazine__of };
+  , .of           = magazine__of };
   
-  memcpy(Magazine, &data, sizeof( struct Magazine )); }
+  memcpy(Magazine, &_, sizeof( struct Magazine )); }
 
 
 unique Unique__create(pointer content, unique_size bytes) {
@@ -125,7 +122,6 @@ struct unique * Unique__allocate(void) {
   return malloc(sizeof( struct unique )); }
 
 unique Unique__initialize(struct unique* this, pointer content, unique_size bytes) {
-  
   this->content = content;
   this->bytes   = bytes;
   
@@ -145,12 +141,13 @@ struct magazine * Magazine__allocate(void) {
   return malloc(sizeof( struct magazine )); }
 
 magazine Magazine__initialize(struct magazine* this, magazine_length extent) {
-  
   this->bits    = (byte)log2(extent);
   this->uniques = malloc((1 << this->bits) * sizeof( struct unique* ));
   
   return this; }
 
+static // »
+magazine_length _magazine__hash(magazine this, pointer content, unique_size bytes);
 unique magazine__of(magazine this, pointer content, unique_size bytes) { unique it; magazine_length // »
   hash = _magazine__hash(    this,         content,             bytes);
   
@@ -158,7 +155,6 @@ unique magazine__of(magazine this, pointer content, unique_size bytes) { unique 
     return Unique->of(it, content, bytes); else
     return this->uniques[hash] = Unique->create(content, bytes); }
 
-static // »
 magazine_length _magazine__hash(magazine this, pointer content, unique_size bytes) { bytes--; magazine_length // »
   hash = offset_basis;
   

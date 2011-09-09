@@ -76,8 +76,10 @@ static blob                     metadata__at           (metadata this,          
 void Paws__register_Blob(void) { Blob     = malloc(sizeof( struct Blob ));
                            Paws->Blob     = Blob;
   auto struct Blob _ =// »
-  { .empty      = Blob__initialize
-  , .allocate   = Blob__allocate };
+  { .empty      = Blob__empty
+  , .allocate   = Blob__allocate
+  
+  , .as_blob    = blob__as_blob };
   
   memcpy(Blob, &_, sizeof( struct Blob )); }
 
@@ -106,7 +108,7 @@ empty Blob__empty(void) {
 struct metadata* Blob__allocate(void) {
   return malloc(sizeof( struct metadata )); }
 
-blob blob__as_blob(empty this) { return (blob){ .pointer = this, .isa = NULL } }
+blob blob__as_blob(empty this) { return (blob){ .pointer = this, .isa = NULL }; }
 
 
 metadata Metadata__initialize(struct metadata* it) {

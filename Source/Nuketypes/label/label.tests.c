@@ -18,9 +18,9 @@ CEST(Label, initialize) { auto label a_label, another_label; auto magazine // »
   a_label = Label->allocate();
   
   Label->initialize(a_label, the_magazine, "some content");
-  ASSERT_NULL    ( a_label->content->first );
-  ASSERT_NULL    ( a_label->content->last );
-  ASSERT_ZERO    ( a_label->content->length );
+  ASSERT_NULL    ( a_label->metadata->first );
+  ASSERT_NULL    ( a_label->metadata->last );
+  ASSERT_ZERO    ( a_label->metadata->length );
   ASSERT_STREQUAL( Label->characters(a_label), "some content" );
   
   another_label = Label->allocate();
@@ -31,12 +31,12 @@ CEST(Label, initialize) { auto label a_label, another_label; auto magazine // »
   
   SUCCEED; }}
 
-CEST(label, thing) { auto label a_label; auto magazine // »
+CEST(label, as_blob) { auto label a_label; auto magazine // »
   the_magazine = Magazine->create(1 << 4);
   a_label = Label->create(the_magazine, "some content");
   
-  ASSERT_EQUAL( Label->thing(a_label).pointer, a_label );
-  ASSERT_EQUAL( Label->thing(a_label).isa,     Label->Label );
+  ASSERT_EQUAL( Label->as_blob(a_label).pointer, a_label );
+  ASSERT_EQUAL( Label->as_blob(a_label).isa,     (representation)Label );
   
   SUCCEED; }}
 

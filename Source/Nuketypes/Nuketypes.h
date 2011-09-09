@@ -8,7 +8,7 @@
 typedef   struct e(blob)                    e(blob);
 
           struct e(metadata);
-typedef   struct e(metadata)                e(metadata);
+typedef   struct e(metadata) *              e(metadata);
 
           struct e(representation);
 typedef   struct e(representation) *        e(representation);
@@ -24,12 +24,12 @@ typedef   struct e(execution) *             e(execution);
 
 
 struct e(representation) {
-  e(pointer)                    family;
-  e(byte)                       name[64]; };
+  e(representation)         family;
+  e(byte)                   name[64]; };
 
 struct e(blob) {
-  e(pointer) const              pointer;
-  e(representation) const       isa; };
+  e(pointer) const          pointer;
+  e(representation) const   isa; };
 
 
 # endif //!defined(TYPE_DECLARATIONS)

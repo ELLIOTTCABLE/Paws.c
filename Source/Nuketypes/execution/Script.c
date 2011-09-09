@@ -30,7 +30,7 @@ struct e(node) {
   
   union {
     e(node)               child;
-    e(thing)              payload; } // »
+    e(blob)               blob; } // »
                         content; };
 
 
@@ -38,18 +38,16 @@ struct E(Node) {
   //  Functions ============
   
   /// `Node` family functions
-  e(terminal)               (*terminal)                 (                       e(thing) payload );
+  e(terminal)               (*terminal)                 (                       e(blob) it );
   e(expression)             (*expression)(void);
   struct e(node) *          (*allocate)(void);
-  e(terminal)               (*initialize_terminal)      ( struct e(node)* this, e(thing) payload );
+  e(terminal)               (*initialize_terminal)      ( struct e(node)* this, e(blob) it );
   e(expression)             (*initialize_expression)    ( struct e(node)* this );
   
   /// `node` instance functions
   e(expression)         (*parent)                   ( e(node) this );
-  e(node)               (*child)                    ( e(expression) this );
-  e(thing)              (*payload)                  ( e(terminal) this );
-                   void (*affix)                    ( e(node) this,       e(node) sibling );
-                   void (*descend)                  ( e(expression) this, e(node) child );
+                   void (*affix)                    ( e(node) this,       e(node) it );
+                   void (*descend)                  ( e(expression) this, e(node) it );
 } IF_INTERNALIZED(extern *Node);
 
 extern    void MAKE_EXTERNAL(register_Node)(void);
@@ -66,65 +64,61 @@ extern    void MAKE_EXTERNAL(register_Node)(void);
 # undef  DECLARATIONS
 
 
-terminal              Node__terminal                 (thing payload);
+terminal              Node__terminal                 (blob it);
 expression            Node__expression(void);
 struct node *         Node__allocate(void);
-terminal              Node__initialize_terminal      (struct node* this, thing payload);
+terminal              Node__initialize_terminal      (struct node* this, blob it);
 expression            Node__initialize_expression    (struct node* this);
 
 expression            node__parent                   (node this);
-node                  node__child                    (expression this);
-thing                 node__payload                  (terminal this);
-                 void node__affix                    (node this, node sibling);
-                 void node__descend                  (expression this, node child);
+                 void node__affix                    (node this,       node it);
+                 void node__descend                  (expression this, node it);
 
 
   IF_EXTERNALIZED(static) struct Node * // »
                                  Node   = NULL;
 void Paws__register_Node(void) { Node   = malloc(sizeof( struct Node ));
   
-  auto struct Node // »
-  data = {
-    .terminal                 = Node__terminal,
-    .expression               = Node__expression,
-    .allocate                 = Node__allocate,
-    .initialize_terminal      = Node__initialize_terminal,
-    .initialize_expression    = Node__initialize_expression,
+  auto struct Node _ = // »
+  { .terminal                 = Node__terminal
+  , .expression               = Node__expression
+  , .allocate                 = Node__allocate
+  , .initialize_terminal      = Node__initialize_terminal
+  , .initialize_expression    = Node__initialize_expression
     
-    .parent                   = node__parent,
-    .child                    = node__child,
-    .payload                  = node__payload,
-    .affix                    = node__affix,
-    .descend                  = node__descend };
+  , .parent                   = node__parent
+  , .affix                    = node__affix
+  , .descend                  = node__descend };
   
-  memcpy(Node, &data, sizeof( struct Node )); }
+  memcpy(Node, &_, sizeof( struct Node )); }
 
 
-terminal   Node__terminal(thing payload) { return Node->initialize_terminal  (Node->allocate(), payload); }
-expression Node__expression(void) {        return Node->initialize_expression(Node->allocate()); }
+terminal   Node__terminal(blob it) { return Node->initialize_terminal  (Node->allocate(), it); }
+expression Node__expression(void) {  return Node->initialize_expression(Node->allocate()); }
 
 struct node* Node__allocate(void) {
   return malloc(sizeof( struct node )); }
 
+static // »
 node      _Node__initialize           (struct node* this, enum node_type isa);
-terminal   Node__initialize_terminal  (struct node* this, thing payload) {
+terminal   Node__initialize_terminal  (struct node* this, blob it) {
           _Node__initialize           (this, TERMINAL);
-                                       this->content.payload = payload;
+                                       this->content.blob = it;
                                 return this; }
 expression Node__initialize_expression(struct node* this) {
           _Node__initialize           (this, EXPRESSION);
                                        this->content.child = NULL;
                                 return this; }
 
-node _Node__initialize           (struct node* this, enum node_type isa) { auto struct node // »
-  data = {
-    .next     = NULL,
-    .isa      = isa,
-    .last     = false };
+node _Node__initialize           (struct node* this, enum node_type isa) { auto struct node _ = // »
+  { .next     = NULL
+  , .isa      = isa
+  , .last     = false };
   
-  memcpy(this, &data, sizeof( struct node ));
+  memcpy(this, &_, sizeof( struct node ));
   return this; }
 
+static // »
 node _node__last(node this);
 expression node__parent(node this) { this = _node__last(this);
   if (this->next == NULL) return NULL;
@@ -134,26 +128,18 @@ node _node__last(node this) {
   if (this->last)         return this;
                      else return _node__last(this->next); }
 
-node node__child(expression this) {
-  if (this->isa != EXPRESSION) return NULL; // TODO: Error
-                          else return this->content.child; }
-
-thing node__payload(terminal this) {
-  if (this->isa != TERMINAL) return (thing){ NULL }; // TODO: Error
-                        else return this->content.payload; }
-
-void node__affix(node this, node sibling) {
+void node__affix(node this, node it) {
   if (_node__last(this) != this)
-    _node__last(sibling)->next = this->next;
+    _node__last(it)->next = this->next;
   if (this->last)
-    _node__last(sibling)->last =! (this->last = false);
-  this->next = sibling; }
+    _node__last(it)->last =! (this->last = false);
+  this->next = it; }
 
-void node__descend(expression this, node descendant) {
-  if (Node->child(this) != NULL)
-    Node->affix(_node__last(Node->child(this)), descendant);
+void node__descend(expression this, node it) {
+  if (this->content.child != NULL)
+    Node->affix(_node__last(this->content.child), it);
   else {
-    this->content.child = descendant;
+    this->content.child = it;
     _node__last(this->content.child)->last = true; } }
 
 

@@ -39,28 +39,28 @@ CEST(metadata, insert) {
   auto blob blob4 = Blob->as_blob(Blob->empty());
   
   /* Insert into empty list */
-  Metdata->insert(an_empty, blob2, 0);
-  ASSERT_EQUAL( Metdata->at(an_empty, 0).pointer, blob2.pointer );
+  Metadata->insert(an_empty, blob2, 0);
+  ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob2.pointer );
   ASSERT_EQUAL( an_empty->metadata->length, 1 );
   
   /* Insert onto the front of fork */
-  Metdata->insert(an_empty, blob1, 0);
-  ASSERT_EQUAL( Metdata->at(an_empty, 0).pointer, blob1.pointer );
+  Metadata->insert(an_empty, blob1, 0);
+  ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob1.pointer );
   ASSERT_EQUAL( an_empty->metadata->length, 2 );
   
   /* Insert onto the end of fork */
-  Metdata->insert(an_empty, blob4, 2);
-  ASSERT_EQUAL( Metdata->at(an_empty, 2).pointer, blob4.pointer );
+  Metadata->insert(an_empty, blob4, 2);
+  ASSERT_EQUAL( Metadata->at(an_empty, 2).pointer, blob4.pointer );
   ASSERT_EQUAL( an_empty->metadata->length, 3 );
   
   /* Insert into fork */
-  Metdata->insert(an_empty, blob3, 2);
-  ASSERT_EQUAL( Metdata->at(an_empty, 2).pointer, blob3.pointer );
+  Metadata->insert(an_empty, blob3, 2);
+  ASSERT_EQUAL( Metadata->at(an_empty, 2).pointer, blob3.pointer );
   ASSERT_EQUAL( an_empty->metadata->length, 4 );
   
   SUCCEED; }}
 
-CEST(fork, prefix) {
+CEST(metadata, prefix) {
   auto empty an_empty = Blob->empty();
   auto blob blob1 = Blob->as_blob(Blob->empty());
   auto blob blob2 = Blob->as_blob(Blob->empty());
@@ -68,19 +68,19 @@ CEST(fork, prefix) {
   
   Metadata->prefix(an_empty, blob3);
   ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob3.pointer );
-  ASSERT_EQUAL( an_Metadata->metadata->length, 1 );
+  ASSERT_EQUAL( an_empty->metadata->length, 1 );
   
   Metadata->prefix(an_empty, blob2);
   ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob2.pointer );
-  ASSERT_EQUAL( an_Metadata->metadata->length, 2 );
+  ASSERT_EQUAL( an_empty->metadata->length, 2 );
   
   Metadata->prefix(an_empty, blob1);
   ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob1.pointer );
-  ASSERT_EQUAL( an_Metadata->metadata->length, 3 );
+  ASSERT_EQUAL( an_empty->metadata->length, 3 );
   
   SUCCEED; }}
 
-CEST(empty, affix) {
+CEST(metadata, affix) {
   auto empty a_empty = Blob->empty();
   auto blob blob1 = Blob->as_blob(Blob->empty());
   auto blob blob2 = Blob->as_blob(Blob->empty());
@@ -100,7 +100,7 @@ CEST(empty, affix) {
   
   SUCCEED; }}
 
-CEST(empty, at) {
+CEST(metadata, at) {
   auto empty a_empty = Blob->empty();
   
   /* Empty `empty`s */

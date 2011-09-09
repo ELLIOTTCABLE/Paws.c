@@ -4,8 +4,17 @@
 # include "Core.h"
 
 
-          struct e(fork);
-typedef   struct e(fork) *                  e(fork);
+          struct e(blob);
+typedef   struct e(blob)                    e(blob);
+
+          struct e(metadata);
+typedef   struct e(metadata)                e(metadata);
+
+          struct e(representation);
+typedef   struct e(representation) *        e(representation);
+
+
+typedef   struct e(metadata) *              e(empty);
 
           struct e(label);
 typedef   struct e(label) *                 e(label);
@@ -14,20 +23,13 @@ typedef   struct e(label) *                 e(label);
 typedef   struct e(execution) *             e(execution);
 
 
-          struct e(thing);
-typedef   struct e(thing)                   e(thing);
-
-          struct e(typeRepresentation);
-typedef   struct e(typeRepresentation) *    e(typeRepresentation);
-
-
-struct e(typeRepresentation) {
+struct e(representation) {
   e(pointer)                    family;
   e(byte)                       name[64]; };
 
-struct e(thing) {
+struct e(blob) {
   e(pointer) const              pointer;
-  e(typeRepresentation) const   isa; };
+  e(representation) const       isa; };
 
 
 # endif //!defined(TYPE_DECLARATIONS)

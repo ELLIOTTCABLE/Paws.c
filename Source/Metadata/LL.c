@@ -22,7 +22,7 @@ typedef   struct e(ll) *            e(ll);
 typedef   unsigned long long int    e(ll_size);
 
 struct e(element) {
-  e(thing)      thing;
+  e(blob)       blob;
   e(element)    next;
   e(element)    previous; };
 struct e(ll) {
@@ -34,9 +34,9 @@ struct e(ll) {
 struct E(Element) {
   // Functions ==============
   /// `Element` family functions
-  e(element)                    (*create)             ( e(thing) thing );
+  e(element)                    (*create)             ( e(blob) it );
     struct e(element) *         (*allocate)(void);
-  e(element)                    (*initialize)         ( struct e(element)* this, e(thing) thing );
+  e(element)                    (*initialize)         ( struct e(element)* this, e(blob) it );
   
   /// `struct element` instance functions
                            void (*prefix)             ( e(element) this, e(element) other );
@@ -73,9 +73,9 @@ extern    void MAKE_EXTERNAL(register_LL)(void);
 # undef  DECLARATIONS
 
 
-static element                  Element__create            (thing thing);
+static element                  Element__create            (blob it);
 static struct element *         Element__allocate(void);
-static element                  Element__initialize        (struct element* this, thing thing);
+static element                  Element__initialize        (struct element* this, blob it);
 
 static                     void element__prefix            (element this,         element other);
 static                     void element__affix             (element this,         element other);
@@ -126,16 +126,16 @@ void Paws__register_LL(void) { LL   = malloc(sizeof( struct LL ));
   memcpy(LL, &data, sizeof( struct LL )); }
 
 
-element Element__create(thing target) {
-  return Element->initialize(Element->allocate(), target); }
+element Element__create(blob it) {
+  return Element->initialize(Element->allocate(), it); }
 
 struct element * Element__allocate(void) {
   return malloc(sizeof( struct element )); }
 
-element Element__initialize(struct element* this, thing target) {
+element Element__initialize(struct element* this, blob it) {
   this->next     = NULL;
   this->previous = NULL;
-  memcpy(&this->thing, &target, sizeof( struct thing ));
+  memcpy(&this->blob, &it, sizeof( struct blob ));
   /* LEAK: Well, what exactly can we do? It’s not like we have a GC yet… */
   
   return this; }

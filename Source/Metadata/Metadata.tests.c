@@ -5,121 +5,121 @@
 # undef  DECLARATIONS
 
 
-CEST(Fork, allocate) { auto struct fork * // »
-  a_fork_struct = Fork->allocate();
+CEST(Blob, allocate) { auto struct metadata * // »
+  an_empty_struct = Blob->allocate();
   
   // This is an absolutely paltry test, but I don’t know what else I can do here. /=
-  ASSERT_NOT_NULL( a_fork_struct );
+  ASSERT_NOT_NULL( an_empty_struct );
   
   SUCCEED; }}
 
-CEST(Fork, initialize) { auto fork // »
-  a_fork = Fork->allocate();
+CEST(Metadata, initialize) { auto struct metadata * // »
+  an_empty_struct = Blob->allocate();
   
-  Fork->initialize(a_fork);
-  ASSERT_NULL( a_fork->content->first );
-  ASSERT_NULL( a_fork->content->last );
-  ASSERT_ZERO( a_fork->content->length );
-  
-  SUCCEED; }}
-
-CEST(fork, thing) { auto fork // »
-  a_fork = Fork->create();
-  
-  ASSERT_EQUAL( Fork->thing(a_fork).pointer, a_fork );
-  ASSERT_EQUAL( Fork->thing(a_fork).isa,     Fork->Fork );
+  Metadata->initialize(an_empty_struct);
+  ASSERT_NULL( an_empty_struct->metadata->first );
+  ASSERT_NULL( an_empty_struct->metadata->last );
+  ASSERT_ZERO( an_empty_struct->metadata->length );
   
   SUCCEED; }}
 
-CEST(fork, insert) {
-  auto fork  a_fork = Fork->create();
-  auto thing thing1 = Fork->thing(Fork->create());
-  auto thing thing2 = Fork->thing(Fork->create());
-  auto thing thing3 = Fork->thing(Fork->create());
-  auto thing thing4 = Fork->thing(Fork->create());
+CEST(blob, as_blob) { auto empty // »
+  an_empty = Blob->empty();
   
-  /* Insert into empty fork */
-  Fork->insert(a_fork, thing2, 0);
-  ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing2.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 1 );
+  ASSERT_EQUAL( Blob->as_blob(an_empty).pointer, an_empty );
+  ASSERT_NULL ( Blob->as_blob(an_empty).isa );
+  
+  SUCCEED; }}
+
+CEST(metadata, insert) {
+  auto empty an_empty = Blob->empty();
+  auto blob blob1 = Blob->as_blob(Blob->empty());
+  auto blob blob2 = Blob->as_blob(Blob->empty());
+  auto blob blob3 = Blob->as_blob(Blob->empty());
+  auto blob blob4 = Blob->as_blob(Blob->empty());
+  
+  /* Insert into empty list */
+  Metdata->insert(an_empty, blob2, 0);
+  ASSERT_EQUAL( Metdata->at(an_empty, 0).pointer, blob2.pointer );
+  ASSERT_EQUAL( an_empty->metadata->length, 1 );
   
   /* Insert onto the front of fork */
-  Fork->insert(a_fork, thing1, 0);
-  ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing1.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 2 );
+  Metdata->insert(an_empty, blob1, 0);
+  ASSERT_EQUAL( Metdata->at(an_empty, 0).pointer, blob1.pointer );
+  ASSERT_EQUAL( an_empty->metadata->length, 2 );
   
   /* Insert onto the end of fork */
-  Fork->insert(a_fork, thing4, 2);
-  ASSERT_EQUAL( Fork->at(a_fork, 2).pointer, thing4.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 3 );
+  Metdata->insert(an_empty, blob4, 2);
+  ASSERT_EQUAL( Metdata->at(an_empty, 2).pointer, blob4.pointer );
+  ASSERT_EQUAL( an_empty->metadata->length, 3 );
   
   /* Insert into fork */
-  Fork->insert(a_fork, thing3, 2);
-  ASSERT_EQUAL( Fork->at(a_fork, 2).pointer, thing3.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 4 );
+  Metdata->insert(an_empty, blob3, 2);
+  ASSERT_EQUAL( Metdata->at(an_empty, 2).pointer, blob3.pointer );
+  ASSERT_EQUAL( an_empty->metadata->length, 4 );
   
   SUCCEED; }}
 
 CEST(fork, prefix) {
-  auto fork  a_fork = Fork->create();
-  auto thing thing1 = Fork->thing(Fork->create());
-  auto thing thing2 = Fork->thing(Fork->create());
-  auto thing thing3 = Fork->thing(Fork->create());
+  auto empty an_empty = Blob->empty();
+  auto blob blob1 = Blob->as_blob(Blob->empty());
+  auto blob blob2 = Blob->as_blob(Blob->empty());
+  auto blob blob3 = Blob->as_blob(Blob->empty());
   
-  Fork->prefix(a_fork, thing3);
-  ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing3.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 1 );
+  Metadata->prefix(an_empty, blob3);
+  ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob3.pointer );
+  ASSERT_EQUAL( an_Metadata->metadata->length, 1 );
   
-  Fork->prefix(a_fork, thing2);
-  ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing2.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 2 );
+  Metadata->prefix(an_empty, blob2);
+  ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob2.pointer );
+  ASSERT_EQUAL( an_Metadata->metadata->length, 2 );
   
-  Fork->prefix(a_fork, thing1);
-  ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing1.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 3 );
-  
-  SUCCEED; }}
-
-CEST(fork, affix) {
-  auto fork  a_fork = Fork->create();
-  auto thing thing1 = Fork->thing(Fork->create());
-  auto thing thing2 = Fork->thing(Fork->create());
-  auto thing thing3 = Fork->thing(Fork->create());
-  
-  Fork->affix(a_fork, thing1);
-  ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing1.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 1 );
-  
-  Fork->affix(a_fork, thing2);
-  ASSERT_EQUAL( Fork->at(a_fork, 1).pointer, thing2.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 2 );
-  
-  Fork->affix(a_fork, thing3);
-  ASSERT_EQUAL( Fork->at(a_fork, 2).pointer, thing3.pointer );
-  ASSERT_EQUAL( a_fork->content->length, 3 );
+  Metadata->prefix(an_empty, blob1);
+  ASSERT_EQUAL( Metadata->at(an_empty, 0).pointer, blob1.pointer );
+  ASSERT_EQUAL( an_Metadata->metadata->length, 3 );
   
   SUCCEED; }}
 
-CEST(fork, at) {
-  auto fork a_fork = Fork->create();
+CEST(empty, affix) {
+  auto empty a_empty = Blob->empty();
+  auto blob blob1 = Blob->as_blob(Blob->empty());
+  auto blob blob2 = Blob->as_blob(Blob->empty());
+  auto blob blob3 = Blob->as_blob(Blob->empty());
   
-  /* Empty `fork`s */
-  ASSERT_NULL( Fork->at(a_fork, 5).pointer );
-  ASSERT_NULL( Fork->at(a_fork, 4).pointer );
-  ASSERT_NULL( Fork->at(a_fork, 1).pointer );
-  ASSERT_NULL( Fork->at(a_fork, 0).pointer );
+  Metadata->affix(a_empty, blob1);
+  ASSERT_EQUAL( Metadata->at(a_empty, 0).pointer, blob1.pointer );
+  ASSERT_EQUAL( a_empty->metadata->length, 1 );
   
-  auto thing thing1 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing1);
-  auto thing thing2 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing2);
-  auto thing thing3 = Fork->thing(Fork->create()); Fork->affix(a_fork, thing3);
+  Metadata->affix(a_empty, blob2);
+  ASSERT_EQUAL( Metadata->at(a_empty, 1).pointer, blob2.pointer );
+  ASSERT_EQUAL( a_empty->metadata->length, 2 );
+  
+  Metadata->affix(a_empty, blob3);
+  ASSERT_EQUAL( Metadata->at(a_empty, 2).pointer, blob3.pointer );
+  ASSERT_EQUAL( a_empty->metadata->length, 3 );
+  
+  SUCCEED; }}
+
+CEST(empty, at) {
+  auto empty a_empty = Blob->empty();
+  
+  /* Empty `empty`s */
+  ASSERT_NULL( Metadata->at(a_empty, 5).pointer );
+  ASSERT_NULL( Metadata->at(a_empty, 4).pointer );
+  ASSERT_NULL( Metadata->at(a_empty, 1).pointer );
+  ASSERT_NULL( Metadata->at(a_empty, 0).pointer );
+  
+  auto blob blob1 = Blob->as_blob(Blob->empty()); Metadata->affix(a_empty, blob1);
+  auto blob blob2 = Blob->as_blob(Blob->empty()); Metadata->affix(a_empty, blob2);
+  auto blob blob3 = Blob->as_blob(Blob->empty()); Metadata->affix(a_empty, blob3);
   
   /* Positive indicies */
-  ASSERT_EQUAL( Fork->at(a_fork, 0).pointer, thing1.pointer );
-  ASSERT_EQUAL( Fork->at(a_fork, 1).pointer, thing2.pointer );
-  ASSERT_EQUAL( Fork->at(a_fork, 2).pointer, thing3.pointer );
+  ASSERT_EQUAL( Metadata->at(a_empty, 0).pointer, blob1.pointer );
+  ASSERT_EQUAL( Metadata->at(a_empty, 1).pointer, blob2.pointer );
+  ASSERT_EQUAL( Metadata->at(a_empty, 2).pointer, blob3.pointer );
   
   /* OOB indicies */
-  ASSERT_NULL( Fork->at(a_fork, 5).pointer );
-  ASSERT_NULL( Fork->at(a_fork, 4).pointer );
+  ASSERT_NULL( Metadata->at(a_empty, 5).pointer );
+  ASSERT_NULL( Metadata->at(a_empty, 4).pointer );
   
   SUCCEED; }}

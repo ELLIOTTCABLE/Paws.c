@@ -1,47 +1,53 @@
-# if !defined(FORK_DECLARATIONS)
-#   define    FORK_DECLARATIONS
+# if !defined(METADATA_DECLARATIONS)
+#   define    METADATA_DECLARATIONS
 
 # if !defined(DECLARATIONS)
-#   define FORK_C__BEHEST
+#   define METADATA_C__BEHEST
 #   define DECLARATIONS
 # endif
 #     include "Core.h"
 #     include "Nuketypes/Nuketypes.h"
 
 #     include "LL.c"
-# if defined(FORK_C__BEHEST)
+# if defined(METADATA_C__BEHEST)
 #   undef DECLARATIONS
 # endif
 
+    // e(empty)
+struct e(metadata) {
+  e(ll)   metadata; };
 
-struct e(fork) {
-  e(ll)   content; };
 
-
-struct E(Fork) {
-    typeRepresentation    Fork;
-  
+struct E(Blob) {
   // Functions ==============
-  /// `Fork` family functions
-  e(fork)                   (*create)(void);
-    struct e(fork) *        (*allocate)(void);
-  e(fork)                   (*initialize)         ( struct e(fork)* this );
+  e(empty)                  (*empty)(void);
+    struct e(metadata) *    (*allocate)(void);
   
-  /// `struct fork` instance functions
-  e(thing)                  (*thing)              ( e(fork) this );
-                       void (*insert)             ( e(fork) this, e(thing) child, e(ll_size) idx );
-                       void (*prefix)             ( e(fork) this, e(thing) child );
-                       void (*affix)              ( e(fork) this, e(thing) child );
-  e(thing)                  (*at)                 ( e(fork) this,                 e(ll_size) idx );
-} IF_INTERNALIZED(extern *Fork);
-
-extern    void MAKE_EXTERNAL(register_Fork)(void);
+  e(blob)                   (*as_blob)            ( e(empty) this );
+} IF_INTERNALIZED(extern *Blob);
 
 
+struct E(Metadata) {
+  // Functions ==============
+  /// `Metadata` family functions
+  e(metadata)         (*initialize)       ( struct e(metadata)* it );
+  
+  /// `struct metadata` instance functions
+                 void (*insert)           ( e(metadata) this, e(blob) child, e(ll_size) idx );
+                 void (*prefix)           ( e(metadata) this, e(blob) child );
+                 void (*affix)            ( e(metadata) this, e(blob) child );
+  e(blob)             (*at)               ( e(metadata) this,                 e(ll_size) idx );
+} IF_INTERNALIZED(extern *Metadata);
 
-# endif //!defined(FORK_DECLARATIONS)
-# if !defined(FORK_IMPLEMENTATION) && !defined(DECLARATIONS) /* ========================================= BODY */
-#   define    FORK_IMPLEMENTATION
+
+extern    void MAKE_EXTERNAL(register_Blob)(void);
+extern    void MAKE_EXTERNAL(register_Metadata)(void);
+
+
+
+# endif //!defined(METADATA_DECLARATIONS)
+# if !defined(METADATA_IMPLEMENTATION) && !defined(DECLARATIONS) /* ===================================== BODY */
+#   define    METADATA_IMPLEMENTATION
 
 # define DECLARATIONS
 #   include "Paws.c"
@@ -51,78 +57,79 @@ extern    void MAKE_EXTERNAL(register_Fork)(void);
 #   include <stdbool.h>
 # undef  DECLARATIONS
 
+static empty                    Blob__empty(void);
+static struct metadata *        Blob__allocate(void);
 
-static fork                 Fork__create(void);
-static struct fork *        Fork__allocate(void);
-static fork                 Fork__initialize         (fork this);
-
-static thing                fork__thing              (fork this);
-static                 void fork__insert             (fork this, thing child, ll_size idx);
-static                 void fork__prefix             (fork this, thing child);
-static                 void fork__affix              (fork this, thing child);
-static thing                fork__at                 (fork this,              ll_size idx);
+static blob                     blob__as_blob            (empty this);
 
 
-  IF_EXTERNALIZED(static) struct Fork * // »
-                                 Fork   = NULL;
-void Paws__register_Fork(void) { Fork   = malloc(sizeof( struct Fork ));
-                           Paws->Fork   = Fork;
+static metadata                 Metadata__initialize   (struct metadata* it);
+
+static                     void metadata__insert       (metadata this, blob child, ll_size idx);
+static                     void metadata__prefix       (metadata this, blob child);
+static                     void metadata__affix        (metadata this, blob child);
+static blob                     metadata__at           (metadata this,             ll_size idx);
+
+
+  IF_EXTERNALIZED(static) struct Blob * // »
+                                 Blob     = NULL;
+void Paws__register_Blob(void) { Blob     = malloc(sizeof( struct Blob ));
+                           Paws->Blob     = Blob;
+  auto struct Blob _ =// »
+  { .empty      = Blob__initialize
+  , .allocate   = Blob__allocate };
+  
+  memcpy(Blob, &_, sizeof( struct Blob )); }
+
+
+      IF_EXTERNALIZED(static) struct Metadata * // »
+                                     Metadata     = NULL;
+void Paws__register_Metadata(void) { Metadata     = malloc(sizeof( struct Metadata ));
+                               Paws->Metadata     = Metadata;
   Paws__register_Element();
   Paws__register_LL();
   
-  auto struct typeRepresentation // »
-  type = { .family = Fork, .name = "fork" };
-  
-  auto struct Fork // »
-  data = {
-    .Fork         = malloc(sizeof( struct typeRepresentation )),
+  auto struct Metadata _ = // »
+  { .initialize   = Metadata__initialize
     
-    .create       = Fork__create,
-    .allocate     = Fork__allocate,
-    .initialize   = Fork__initialize,
-    
-    .thing        = fork__thing,
-    .insert       = fork__insert,
-    .prefix       = fork__prefix,
-    .affix        = fork__affix,
-    .at           = fork__at };
+  , .insert       = metadata__insert
+  , .prefix       = metadata__prefix
+  , .affix        = metadata__affix
+  , .at           = metadata__at };
   
-  memcpy(data.Fork, &type, sizeof( struct typeRepresentation ));
-  memcpy(Fork,      &data, sizeof( struct Fork )); }
+  memcpy(Metadata, &_, sizeof( struct Metadata )); }
 
 
-fork Fork__create(void) {
-  return Fork->initialize(Fork->allocate()); }
+empty Blob__empty(void) {
+  return Metadata__initialize(Blob__allocate()); }
 
-struct fork * Fork__allocate(void) {
-  return malloc(sizeof( struct fork )); }
+struct metadata* Blob__allocate(void) {
+  return malloc(sizeof( struct metadata )); }
 
-fork Fork__initialize(fork this) {
-  this->content = LL->create();
+blob blob__as_blob(empty this) { return (blob){ .pointer = this, .isa = NULL } }
+
+
+metadata Metadata__initialize(struct metadata* it) {
+  it->metadata = LL->create();
   
-  return this; }
+  return it; }
 
-thing fork__thing(fork this) { auto struct thing // »
-  something = { .pointer = this, .isa = Fork->Fork };
-  
-  return something; }
-
-void fork__insert(fork this, thing child, ll_size idx) {
-  if (idx == 0)                          Fork->prefix(this, child);
-  else if (idx == this->content->length) Fork->affix (this, child);
+void metadata__insert(metadata this, blob it, ll_size idx) {
+  if (idx == 0)                           Metadata->prefix(this, it);
+  else if (idx == this->metadata->length) Metadata->affix (this, it);
   else
-    LL->posterior_insert(this->content, Element->create(child), idx); }
+    LL->posterior_insert(this->metadata, Element->create(it), idx); }
 
-void fork__prefix(fork this, thing child) {
-  LL->prefix(this->content, Element->create(child)); }
+void metadata__prefix(metadata this, blob it) {
+  LL->prefix(this->metadata, Element->create(it)); }
 
-void fork__affix(fork this, thing child)  {
-  LL->affix (this->content, Element->create(child)); }
+void metadata__affix(metadata this, blob it)  {
+  LL->affix (this->metadata, Element->create(it)); }
 
-thing fork__at(fork this, ll_size idx) { auto element // »
-  e = LL->at(this->content, idx);
+blob metadata__at(metadata this, ll_size idx) { auto element // »
+  it = LL->at(this->metadata, idx);
   
-  if (e == NULL) return (thing){ NULL };
-            else return e->thing; }
+  if (it == NULL) return (blob){ NULL };
+             else return it->blob; }
 
-# endif //!defined(FORK_IMPLEMENTATION) && !defined(DECLARATIONS)
+# endif //!defined(METADATA_IMPLEMENTATION) && !defined(DECLARATIONS)

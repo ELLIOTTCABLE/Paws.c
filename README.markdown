@@ -14,13 +14,13 @@ explain without an example interpreter to point people to, even on a one-on-basi
 with no example implementation *and* in a generalized anybody-who-reads-this form. (Yes, we know this situation
 sucks!)
 
-We’re always available in [**#Paws.Nucleus**][#Paws.Nucleus] on the Freenode IRC network ([click here][webchat] to immediately
-open a temporary IRC client.)
+We’re always available in [**#elliottcabke**][#elliottcable] on the Freenode IRC network ([click here][webchat]
+to immediately open a temporary IRC client in your browser.)
 
   [@elliottcable]: http://twitter.com/elliottcable
   [strata]: https://github.com/Paws/Paws.c/wiki/Strata
-  [#Paws.Nucleus]: irc://chat.freenode.net/#Paws.Nucleus
-  [webchat]: http://webchat.freenode.net?channels=%23Paws.Nucleus
+  [#Paws.Nucleus]: irc://chat.freenode.net/#elliottcable
+  [webchat]: http://webchat.freenode.net?channels=%23elliottcable
 
 Spelunking
 ----------

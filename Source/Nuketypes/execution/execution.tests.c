@@ -5,12 +5,8 @@
 # undef  DECLARATIONS
 
 
-# define SOME_EXPRESSION _make_an_expression()//;
-
-static node _make_an_expression(void) { auto expression // »
-  an_expression = Node->expression();
-  
-  return an_expression; }
+# define SOME_EXPRESSION _make_some_expression()//;
+static expression        _make_some_expression(void) { return Node->expression(); }
 
 CEST(Execution, allocate) { auto struct execution * // »
   an_execution_pointer = Execution->allocate();

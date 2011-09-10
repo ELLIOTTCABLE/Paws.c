@@ -105,10 +105,7 @@ label Label__initialize(struct label* this, magazine with, charray characters) {
   
   return this; }
 
-blob label__as_blob(label this) { auto struct blob // »
-  some_blob = { .pointer = this, .isa = (representation)Label };
-  
-  return some_blob; }
+blob label__as_blob(label this) { return (blob){ .pointer = this, .isa = (representation)Label }; }
 
 charray label__characters(label this) {
   return this->characters->content; }

@@ -100,10 +100,7 @@ execution Execution__initialize(execution this, node first) {
   
   return this; }
 
-blob execution__as_blob(execution this) { auto struct blob // »
-  some_blob = { .pointer = this, .isa = (representation)Execution };
-  
-  return some_blob; }
+blob execution__as_blob(execution this) { return (blob){ .pointer = this, .isa = (representation)Execution }; }
 
 void execution__advance(execution this) {
   

@@ -7,11 +7,7 @@
 
 
 # define SOME_BLOB _make_some_blob()//;
-
-blob static _make_some_blob(void) { auto struct blob // »
-  some_blob = { .pointer = NULL, .isa = NULL };
-  
-  return some_blob; }
+static blob        _make_some_blob(void) { return (blob){ NULL, NULL }; }
 
 CEST(LL, allocate) { auto struct ll * // »
   a_ll_pointer = LL->allocate();

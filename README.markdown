@@ -42,32 +42,32 @@ right now):
     
     # Compiling executable (TODO)
     #C99 -ISource \
-    #  Source/Types/fork/LL.tests.c \
-    #  Source/Types/fork/fork.tests.c \
-    #  Source/Types/execution/Script.c \
-    #  Source/Types/execution/execution.c \
-    #  Source/Types/label/Magazine.tests.c \
-    #  Source/Types/label/label.tests.c \
+    #  Source/Metadata/LL.tests.c \
+    #  Source/Metadata/Metadata.tests.c \
+    #  Source/Nuketypes/execution/Script.c \
+    #  Source/Nuketypes/execution/execution.c \
+    #  Source/Nuketypes/label/Magazine.tests.c \
+    #  Source/Nuketypes/label/label.tests.c \
     #Source/Executable/Paws.c.c && ./Paws.c.o
     
     # Compiling and running all tests
     C99   -IVendor -DCEST__NO_AUTO Vendor/Cest.c/Source/Cest.c   -ISource \
-      Source/Types/fork/LL.tests.c \
-      Source/Types/fork/fork.tests.c \
-      Source/Types/execution/Script.tests.c \
-      Source/Types/execution/execution.tests.c \
-      Source/Types/label/Magazine.tests.c \
-      Source/Types/label/label.tests.c \
+      Source/Metadata/LL.tests.c \
+      Source/Metadata/Metadata.tests.c \
+      Source/Nuketypes/execution/Script.tests.c \
+      Source/Nuketypes/execution/execution.tests.c \
+      Source/Nuketypes/label/Magazine.tests.c \
+      Source/Nuketypes/label/label.tests.c \
     Source/Paws.tests.c && ./Paws.tests.o
     
     # Compiling and running all tests with gdb
     C99 -ggdb   -IVendor -DCEST__NO_AUTO Vendor/Cest.c/Source/Cest.c   -ISource \
-      Source/Types/fork/LL.tests.c \
-      Source/Types/fork/fork.tests.c \
-      Source/Types/execution/Script.tests.c \
-      Source/Types/execution/execution.tests.c \
-      Source/Types/label/Magazine.tests.c \
-      Source/Types/label/label.tests.c \
+      Source/Metadata/LL.tests.c \
+      Source/Metadata/Metadata.tests.c \
+      Source/Nuketypes/execution/Script.tests.c \
+      Source/Nuketypes/execution/execution.tests.c \
+      Source/Nuketypes/label/Magazine.tests.c \
+      Source/Nuketypes/label/label.tests.c \
     Source/Paws.tests.c && gdb -q -batch -x =(echo -e "run\nquit") -se ./Paws.tests.o
     
 ### Makefile

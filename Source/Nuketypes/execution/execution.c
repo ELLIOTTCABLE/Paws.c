@@ -6,27 +6,29 @@
 #   define DECLARATIONS
 # endif
 #     include "Core.h"
-#     include "Types/Types.h"
+#     include "Nuketypes/Nuketypes.h"
       
-#     include "Types/fork/ll.c"
+#     include "Metadata/Metadata.c"
 #     include "Script.c"
 # if defined(EXECUTION_C__BEHEST)
 #   undef DECLARATIONS
 # endif
 
 struct e(juxtaposee) {
-  e(thing)                    payload;
+  e(blob)                     payload;
   e(node)                     from;
     struct e(juxtaposee) *    out; };
 
 struct e(execution) {
-  e(ll)                       content;
+  e(ll)                       metadata;
+  
   e(node)                     position;
     struct e(juxtaposee) *    juxtaposees; };
 
 
 struct E(Execution) {
-    typeRepresentation    Execution;
+  e(representation)                 family;
+  e(byte)                           name[64];
   
   // Functions ==============
   
@@ -36,7 +38,7 @@ struct E(Execution) {
   e(execution)                    (*initialize)         ( struct e(execution)* this, e(node) first );
   
   /// `struct execution` instance functions
-  e(thing)                        (*thing)              ( e(execution) this );
+  e(blob)                         (*as_blob)            ( e(execution) this );
                              void (*advance)            ( e(execution) this );
 } IF_INTERNALIZED(extern *Execution);
 
@@ -60,32 +62,28 @@ static execution                  Execution__create            (node first);
 static struct execution *         Execution__allocate(void);
 static execution                  Execution__initialize        (execution this, node first);
 
-static thing                      execution__thing             (execution this);
+static blob                       execution__as_blob           (execution this);
 static                       void execution__advance           (execution this);
 
 
        IF_EXTERNALIZED(static) struct Execution * // »
-                                      Execution   = NULL;
-void Paws__register_Execution(void) { Execution   = malloc(sizeof( struct Execution ));
-                                Paws->Execution   = Execution;
+                                      Execution     = NULL;
+void Paws__register_Execution(void) { Execution     = malloc(sizeof( struct Execution ));
+                                Paws->Execution     = Execution;
   Paws__register_Node();
   
-  auto struct typeRepresentation // »
-  type = { .family = Execution, .name = "execution" };
-  
-  auto struct Execution // »
-  data = {
-    .Execution    = malloc(sizeof( struct typeRepresentation )),
+  auto struct Execution _ = // »
+  { .family       = (representation)Execution
+  , .name         = "execution"
     
-    .create       = Execution__create,
-    .allocate     = Execution__allocate,
-    .initialize   = Execution__initialize,
+  , .create       = Execution__create
+  , .allocate     = Execution__allocate
+  , .initialize   = Execution__initialize
     
-    .thing        = execution__thing,
-    .advance      = execution__advance };
+  , .as_blob      = execution__as_blob
+  , .advance      = execution__advance };
   
-  memcpy(data.Execution, &type, sizeof( struct typeRepresentation ));
-  memcpy(Execution,      &data, sizeof( struct Execution )); }
+  memcpy(Execution, &_, sizeof( struct Execution )); }
 
 
 execution Execution__create(node first) {
@@ -95,17 +93,14 @@ struct execution * Execution__allocate(void) {
   return malloc(sizeof( struct execution )); }
 
 execution Execution__initialize(execution this, node first) {
-  this->content = LL->create();
+  Metadata->initialize((metadata)this);
   
   this->position = first;
   this->juxtaposees = NULL;
   
   return this; }
 
-thing execution__thing(execution this) { auto struct thing // »
-  something = { .pointer = this, .isa = Execution->Execution };
-  
-  return something; }
+blob execution__as_blob(execution this) { return (blob){ .pointer = this, .isa = (representation)Execution }; }
 
 void execution__advance(execution this) {
   

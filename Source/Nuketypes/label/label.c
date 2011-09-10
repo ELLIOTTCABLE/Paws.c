@@ -6,10 +6,10 @@
 #   define DECLARATIONS
 # endif
 #     include "Core.h"
-#     include "Types/Types.h"
+#     include "Nuketypes/Nuketypes.h"
 
 #     include "Magazine.c"
-#     include "Types/fork/LL.c"
+#     include "Metadata/Metadata.c"
 
 #     include <stdbool.h>
 # if defined(LABEL_C__BEHEST)
@@ -18,13 +18,15 @@
 
 
 struct e(label) {
-  e(ll)       content;
+  e(ll)       metadata;
+  
   e(unique)   characters; };
   
 
 
 struct E(Label) {
-    typeRepresentation          Label;
+  e(representation)       family;
+  e(byte)                 name[64];
   
   // Functions ==============
   /// `Label` family functions
@@ -33,7 +35,7 @@ struct E(Label) {
   e(label)              (*initialize)         ( struct e(label)* this, e(magazine) with, e(charray) characters );
   
   /// `struct label` instance functions
-  e(thing)              (*thing)              ( e(label) this );
+  e(blob)               (*as_blob)            ( e(label) this );
   e(charray)            (*characters)         ( e(label) this );
     bool                (*equal)              ( e(label) this, e(label) that );
 } IF_INTERNALIZED(extern *Label);
@@ -63,7 +65,7 @@ static label            Label__create            (magazine with, charray charact
 static struct label *   Label__allocate(void);
 static label            Label__initialize        (struct label* this, magazine with, charray characters);
 
-static thing            label__thing             (label this);
+static blob             label__as_blob           (label this);
 static charray          label__characters        (label this);
 static bool             label__equal             (label this, label that);
 
@@ -75,41 +77,35 @@ void Paws__register_Label(void) { Label   = malloc(sizeof( struct Label ));
   Paws__register_Unique();
   Paws__register_Magazine();
   
-  auto struct typeRepresentation // »
-  type = { .family = Label, .name = "label" };
-  
-  auto struct Label // »
-  data = {
-    .Label        = malloc(sizeof( struct typeRepresentation )),
+  auto struct Label _ = // »
+  { .family       = (representation)Label
+  , .name         = "label"
     
-    .create       = Label__create,
-    .allocate     = Label__allocate,
-    .initialize   = Label__initialize,
+  , .create       = Label__create
+  , .allocate     = Label__allocate
+  , .initialize   = Label__initialize
     
-    .thing        = label__thing,
-    .characters   = label__characters,
-    .equal        = label__equal };
+  , .as_blob      = label__as_blob
+  , .characters   = label__characters
+  , .equal        = label__equal };
   
-  memcpy(data.Label, &type, sizeof( struct typeRepresentation ));
-  memcpy(Label,      &data, sizeof( struct Label )); }
+  memcpy(Label, &_, sizeof( struct Label )); }
 
 
 label Label__create(magazine with, charray characters) {
   return Label->initialize(Label->allocate(), with, characters); }
 
-struct label * Label__allocate(void) {
+struct label* Label__allocate(void) {
   return malloc(sizeof( struct label )); }
 
 label Label__initialize(struct label* this, magazine with, charray characters) {
-  this->content = LL->create();
+  Metadata->initialize((metadata)this);
+  
   this->characters = Magazine->of(with, characters, STRNLEN(characters, UNIQUE_SIZE_MAX));
   
   return this; }
 
-thing label__thing(label this) { auto struct thing // »
-  something = { .pointer = this, .isa = Label->Label };
-  
-  return something; }
+blob label__as_blob(label this) { return (blob){ .pointer = this, .isa = (representation)Label }; }
 
 charray label__characters(label this) {
   return this->characters->content; }

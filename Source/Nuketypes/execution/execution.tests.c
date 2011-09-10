@@ -5,12 +5,8 @@
 # undef  DECLARATIONS
 
 
-# define SOME_EXPRESSION _make_an_expression()//;
-
-static node _make_an_expression(void) { auto expression // »
-  an_expression = Node->expression();
-  
-  return an_expression; }
+# define SOME_EXPRESSION _make_some_expression()//;
+static expression        _make_some_expression(void) { return Node->expression(); }
 
 CEST(Execution, allocate) { auto struct execution * // »
   an_execution_pointer = Execution->allocate();
@@ -25,20 +21,20 @@ CEST(Execution, initialize) {
   auto expression an_expression = Node->expression();
   
   Execution->initialize(an_execution, an_expression);
-  ASSERT_NULL( an_execution->content->first );
-  ASSERT_NULL( an_execution->content->last );
-  ASSERT_ZERO( an_execution->content->length );
+  ASSERT_NULL( an_execution->metadata->first );
+  ASSERT_NULL( an_execution->metadata->last );
+  ASSERT_ZERO( an_execution->metadata->length );
   
   ASSERT_EQUAL( an_execution->position, an_expression );
   ASSERT_NULL ( an_execution->juxtaposees );
   
   SUCCEED; }}
 
-CEST(execution, thing) {
+CEST(execution, as_blob) {
   auto execution an_execution = Execution->create(SOME_EXPRESSION);
   
-  ASSERT_EQUAL( Execution->thing(an_execution).pointer, an_execution );
-  ASSERT_EQUAL( Execution->thing(an_execution).isa,     Execution->Execution );
+  ASSERT_EQUAL( Execution->as_blob(an_execution).pointer, an_execution );
+  ASSERT_EQUAL( Execution->as_blob(an_execution).isa,     (representation)Execution );
   
   SUCCEED; }}
 

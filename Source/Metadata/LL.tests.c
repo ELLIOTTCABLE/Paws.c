@@ -6,12 +6,8 @@
 # undef  DECLARATIONS
 
 
-# define SOMETHING _make_something()//;
-
-thing static _make_something(void) { auto struct thing // »
-  something = { .pointer = NULL, .isa = NULL };
-  
-  return something; }
+# define SOME_BLOB _make_some_blob()//;
+static blob        _make_some_blob(void) { return (blob){ NULL, NULL }; }
 
 CEST(LL, allocate) { auto struct ll * // »
   a_ll_pointer = LL->allocate();
@@ -33,10 +29,10 @@ CEST(LL, initialize) { auto struct ll * // »
 
 CEST(ll, anterior_insert) { auto ll a_ll; auto element element1, element2, element3, elementA;
   a_ll = LL->create();
-  element1 = Element->create(SOMETHING); LL->affix(a_ll, element1);
-  element2 = Element->create(SOMETHING); LL->affix(a_ll, element2);
-  element3 = Element->create(SOMETHING); LL->affix(a_ll, element3);
-  elementA = Element->create(SOMETHING);
+  element1 = Element->create(SOME_BLOB); LL->affix(a_ll, element1);
+  element2 = Element->create(SOME_BLOB); LL->affix(a_ll, element2);
+  element3 = Element->create(SOME_BLOB); LL->affix(a_ll, element3);
+  elementA = Element->create(SOME_BLOB);
   
   /* TODO: Error condition */
   LL->anterior_insert(a_ll, elementA, 0);
@@ -51,10 +47,10 @@ CEST(ll, anterior_insert) { auto ll a_ll; auto element element1, element2, eleme
 
 CEST(ll, posterior_insert) { auto ll a_ll; auto element element1, element2, element3, elementA;
   a_ll = LL->create();
-  element1 = Element->create(SOMETHING); LL->affix(a_ll, element1);
-  element2 = Element->create(SOMETHING); LL->affix(a_ll, element2);
-  element3 = Element->create(SOMETHING); LL->affix(a_ll, element3);
-  elementA = Element->create(SOMETHING);
+  element1 = Element->create(SOME_BLOB); LL->affix(a_ll, element1);
+  element2 = Element->create(SOME_BLOB); LL->affix(a_ll, element2);
+  element3 = Element->create(SOME_BLOB); LL->affix(a_ll, element3);
+  elementA = Element->create(SOME_BLOB);
   
   /* TODO: Error condition */
   LL->posterior_insert(a_ll, elementA, a_ll->length);
@@ -69,9 +65,9 @@ CEST(ll, posterior_insert) { auto ll a_ll; auto element element1, element2, elem
 
 CEST(ll, prefix) { auto ll a_ll; auto element element1, element2, element3;
   a_ll = LL->create();
-  element1 = Element->create(SOMETHING);
-  element2 = Element->create(SOMETHING);
-  element3 = Element->create(SOMETHING);
+  element1 = Element->create(SOME_BLOB);
+  element2 = Element->create(SOME_BLOB);
+  element3 = Element->create(SOME_BLOB);
   
   LL->prefix(a_ll, element3);
   ASSERT_EQUAL( a_ll->length, 1 );
@@ -92,9 +88,9 @@ CEST(ll, prefix) { auto ll a_ll; auto element element1, element2, element3;
 
 CEST(ll, affix) { auto ll a_ll; auto element element1, element2, element3;
   a_ll = LL->create();
-  element1 = Element->create(SOMETHING);
-  element2 = Element->create(SOMETHING);
-  element3 = Element->create(SOMETHING);
+  element1 = Element->create(SOME_BLOB);
+  element2 = Element->create(SOME_BLOB);
+  element3 = Element->create(SOME_BLOB);
   
   LL->affix(a_ll, element1);
   ASSERT_EQUAL( a_ll->length, 1 );
@@ -121,9 +117,9 @@ CEST(ll, at) { auto ll a_ll; auto element element1, element2, element3;
   ASSERT_NULL( LL->at(a_ll, 1) );
   ASSERT_NULL( LL->at(a_ll, 0) );
   
-  element1 = Element->create(SOMETHING); LL->affix(a_ll, element1);
-  element2 = Element->create(SOMETHING); LL->affix(a_ll, element2);
-  element3 = Element->create(SOMETHING); LL->affix(a_ll, element3);
+  element1 = Element->create(SOME_BLOB); LL->affix(a_ll, element1);
+  element2 = Element->create(SOME_BLOB); LL->affix(a_ll, element2);
+  element3 = Element->create(SOME_BLOB); LL->affix(a_ll, element3);
   
   /* Positive indicies */
   ASSERT_EQUAL( LL->at(a_ll, 0), element1 );
@@ -148,19 +144,19 @@ CEST(Element, allocate) { auto struct element * // »
 CEST(Element, initialize) { auto struct element * // »
   an_element_pointer = Element->allocate();
   
-  Element->initialize(an_element_pointer, SOMETHING);
+  Element->initialize(an_element_pointer, SOME_BLOB);
   ASSERT_NULL( (*an_element_pointer).next );
   ASSERT_NULL( (*an_element_pointer).previous );
   
   SUCCEED; }}
 
 CEST(element, prefix) { auto element // »
-  element1 = Element->create(SOMETHING),
-  element2 = Element->create(SOMETHING),
-  element3 = Element->create(SOMETHING),
-  elementA = Element->create(SOMETHING),
-  elementB = Element->create(SOMETHING),
-  elementC = Element->create(SOMETHING);
+  element1 = Element->create(SOME_BLOB),
+  element2 = Element->create(SOME_BLOB),
+  element3 = Element->create(SOME_BLOB),
+  elementA = Element->create(SOME_BLOB),
+  elementB = Element->create(SOME_BLOB),
+  elementC = Element->create(SOME_BLOB);
   
   
   /* A basic single prefix */
@@ -215,12 +211,12 @@ CEST(element, prefix) { auto element // »
   SUCCEED; }}
 
 CEST(element, affix) { auto element // »
-  element1 = Element->create(SOMETHING),
-  element2 = Element->create(SOMETHING),
-  element3 = Element->create(SOMETHING),
-  elementA = Element->create(SOMETHING),
-  elementB = Element->create(SOMETHING),
-  elementC = Element->create(SOMETHING);
+  element1 = Element->create(SOME_BLOB),
+  element2 = Element->create(SOME_BLOB),
+  element3 = Element->create(SOME_BLOB),
+  elementA = Element->create(SOME_BLOB),
+  elementB = Element->create(SOME_BLOB),
+  elementC = Element->create(SOME_BLOB);
   
   
   /* A basic single affix */

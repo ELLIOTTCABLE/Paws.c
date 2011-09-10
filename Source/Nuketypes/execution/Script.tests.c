@@ -7,12 +7,8 @@
 # undef  DECLARATIONS
 
 
-# define SOMETHING _make_something()//;
-
-thing static _make_something(void) { auto struct thing // »
-  something = { .pointer = NULL, .isa = NULL };
-  
-  return something; }
+# define SOME_BLOB _make_some_blob()//;
+static blob        _make_some_blob(void) { return (blob){ NULL, NULL }; }
 
 CEST(Node, allocate) { auto struct node * // »
   a_node_pointer = Node->allocate();
@@ -25,12 +21,12 @@ CEST(Node, allocate) { auto struct node * // »
 CEST(Node, initialize_terminal) { auto struct node * // »
   a_terminal_pointer = Node->allocate();
   
-  auto thing something = SOMETHING;
-  Node->initialize_terminal(a_terminal_pointer, something);
+  auto blob some_blob = SOME_BLOB;
+  Node->initialize_terminal(a_terminal_pointer, some_blob);
   ASSERT_NULL ( (*a_terminal_pointer).next );
   ASSERT_EQUAL( (*a_terminal_pointer).isa, TERMINAL );
   ASSERT_NOT  ( (*a_terminal_pointer).last );
-  ASSERT_EQUAL(((*a_terminal_pointer).content.payload).pointer, something.pointer );
+  ASSERT_EQUAL(((*a_terminal_pointer).content.blob).pointer, some_blob.pointer );
   
   SUCCEED; }}
 
@@ -65,45 +61,6 @@ CEST(node, parent) { auto node result;
                                                childC->next = NULL;   childC->last = true;
                result           = Node->parent(childA);
   ASSERT_NULL( result );
-  
-  SUCCEED; }}
-
-CEST(node, child) { auto node result;
-  /* `EXPRESSION` as a child of an `EXPRESSION`: `(:EXPRESSION (:EXPRESSION))` */
-  auto expression parent = Node->expression();
-  auto expression  child = Node->expression();  child->next = parent;
-                                                child->last = true;
-                                                parent->content.child = child;
-                result            = Node->child(parent);
-  ASSERT_EQUAL( result, child );
-  
-  /* `EXPRESSION` with no child: `(:EXPRESSION)` */
-  auto expression another = Node->expression();
-               result     = Node->parent(another);
-  ASSERT_NULL( result );
-  
-  SOMEDAY;
-  /* Erraneous `TERMINAL` node: `(:TERMINAL, <NULL>)` */
-  //auto node terminal = Node->terminal(SOMETHING);
-  //ASSERT_ERRANEOUS( Node->child(terminal) );
-  
-  SUCCEED; }}
-
-CEST(node, payload) { auto terminal container; auto thing result
-, something = SOMETHING;
-  container = Node->terminal(something);
-  
-  result = Node->payload(container);
-  ASSERT_EQUAL( result.pointer, something.pointer );
-  
-  SOMEDAY;
-  /* Erraneous `EXPRESSION` node: `(:EXPRESSION)` */
-  //auto node expression = Node->expression();
-  //ASSERT_ERRANEOUS( Node->payload(expression) );
-  
-  /* Erraneous `SCOPE` node: `(:SCOPE)` */
-  //auto node scope = Node->scope();
-  //ASSERT_ERRANEOUS( Node->payload(scope) );
   
   SUCCEED; }}
 

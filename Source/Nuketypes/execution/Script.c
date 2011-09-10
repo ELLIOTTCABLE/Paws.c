@@ -21,7 +21,7 @@ typedef   struct e(node) *    e(node);
 typedef   struct e(node) *    e(terminal);
 typedef   struct e(node) *    e(expression);
 
-enum e(node_type) { e(TERMINAL) = 0, e(EXPRESSION) };
+enum e(node_type) { e(EXPRESSION) = 0, e(TERMINAL) };
 
 struct e(node) {
   e(node)               next;
@@ -29,25 +29,24 @@ struct e(node) {
     bool                last;
   
   union {
-    e(node)               child;
+    e(node)               skip;
     e(blob)               blob; } // »
-                        content; };
+                        _; };
 
 
 struct E(Node) {
   //  Functions ============
   
   /// `Node` family functions
-  e(terminal)               (*terminal)                 (                       e(blob) it );
+  e(terminal)               (*terminal)                                       ( e(blob) it );
   e(expression)             (*expression)(void);
   struct e(node) *          (*allocate)(void);
   e(terminal)               (*initialize_terminal)      ( struct e(node)* this, e(blob) it );
   e(expression)             (*initialize_expression)    ( struct e(node)* this );
   
   /// `node` instance functions
-  e(expression)         (*parent)                   ( e(node) this );
-                   void (*affix)                    ( e(node) this,       e(node) it );
-                   void (*descend)                  ( e(expression) this, e(node) it );
+                     void (*affix)                             ( e(node)  this, e(node) it );
+                     void (*descend)                     ( e(expression)  this, e(node) it );
 } IF_INTERNALIZED(extern *Node);
 
 extern    void MAKE_EXTERNAL(register_Node)(void);
@@ -64,15 +63,14 @@ extern    void MAKE_EXTERNAL(register_Node)(void);
 # undef  DECLARATIONS
 
 
-terminal              Node__terminal                 (blob it);
-expression            Node__expression(void);
-struct node *         Node__allocate(void);
-terminal              Node__initialize_terminal      (struct node* this, blob it);
-expression            Node__initialize_expression    (struct node* this);
+static terminal              Node__terminal                                    (blob it);
+static expression            Node__expression(void);
+static struct node *         Node__allocate(void);
+static terminal              Node__initialize_terminal      (struct node* this, blob it);
+static expression            Node__initialize_expression    (struct node* this);
 
-expression            node__parent                   (node this);
-                 void node__affix                    (node this,       node it);
-                 void node__descend                  (expression this, node it);
+static                  void node__affix                           (node  this, node it);
+static                  void node__descend                   (expression  this, node it);
 
 
   IF_EXTERNALIZED(static) struct Node * // »
@@ -86,7 +84,6 @@ void Paws__register_Node(void) { Node   = malloc(sizeof( struct Node ));
   , .initialize_terminal      = Node__initialize_terminal
   , .initialize_expression    = Node__initialize_expression
     
-  , .parent                   = node__parent
   , .affix                    = node__affix
   , .descend                  = node__descend };
   
@@ -103,11 +100,11 @@ static // »
 node      _Node__initialize           (struct node* this, enum node_type isa);
 terminal   Node__initialize_terminal  (struct node* this, blob it) {
           _Node__initialize           (this, TERMINAL);
-                                       this->content.blob = it;
+                                       this->_.blob = it;
                                 return this; }
 expression Node__initialize_expression(struct node* this) {
           _Node__initialize           (this, EXPRESSION);
-                                       this->content.child = NULL;
+                                       this->_.skip = NULL;
                                 return this; }
 
 node _Node__initialize           (struct node* this, enum node_type isa) { auto struct node _ = // »
@@ -118,29 +115,28 @@ node _Node__initialize           (struct node* this, enum node_type isa) { auto 
   memcpy(this, &_, sizeof( struct node ));
   return this; }
 
-static // »
-node _node__last(node this);
-expression node__parent(node this) { this = _node__last(this);
-  if (this->next == NULL) return NULL;
-                     else return this->next; }
-node _node__last(node this) {
-  if (this->next == NULL) return this;
-  if (this->last)         return this;
-                     else return _node__last(this->next); }
+static inline // »
+node _node__last(node this) { auto node // »
+      next = this->isa? this->next:this->_.skip;
+  if (next == NULL) return this;
+  if (this->last)   return this;
+               else return _node__last(next); }
 
-void node__affix(node this, node it) {
+void node__affix(node this, node it) { auto node // »
+  last = _node__last(it)
+, next = this->isa? this->next:this->_.skip;
   if (_node__last(this) != this)
-    _node__last(it)->next = this->next;
+    last->isa? (last->next = next) : (last->_.skip = next);
   if (this->last)
-    _node__last(it)->last =! (this->last = false);
-  this->next = it; }
+    last->last =! (this->last = false);
+  this->isa? (this->next = it) : (this->_.skip = it); }
 
 void node__descend(expression this, node it) {
-  if (this->content.child != NULL)
-    Node->affix(_node__last(this->content.child), it);
+  if (this->next != NULL)
+    Node->affix(_node__last(this->next), it);
   else {
-    this->content.child = it;
-    _node__last(this->content.child)->last = true; } }
+    this->next = it;
+    _node__last(this->next)->last = true; } }
 
 
 # endif //!defined(SCRIPT_IMPLEMENTATION) && !defined(DECLARATIONS)

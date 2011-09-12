@@ -1,6 +1,6 @@
 `Paws.c`
 ========
-Paws is [@elliottcable][]’s programming language. The design is over a year old, but has gone through
+Paws is [@elliottcable][]’s programming language. The design is almost two years old, but has gone through
 [many iterations][Strata] and changes. There is no working implementation, though several separate codebases are
 underway.
 
